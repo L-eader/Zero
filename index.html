@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZeroSMP</title>
+    <title>ZeroSMP |- play.rioo.my</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cairo & JetBrains Mono -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Tajawal & Cairo & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -17,15 +17,16 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Cairo', 'sans-serif'],
+                        sans: ['Tajawal', 'Cairo', 'sans-serif'],
+                        display: ['Cairo', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         mc: {
-                            bg: '#080610',
-                            card: '#120d21',
-                            border: '#271c47',
-                            purple: '#9333ea',
+                            bg: '#090612',
+                            card: '#130b24',
+                            border: '#2d1b4e',
+                            purple: '#8b5cf6',
                             accent: '#c084fc',
                             emerald: '#10b981',
                             amber: '#f59e0b',
@@ -39,31 +40,36 @@
 
     <style>
         body {
-            background-color: #080610;
+            background-color: #090612;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.16) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.14) 0px, transparent 50%),
-                radial-gradient(at 50% 100%, rgba(126, 34, 206, 0.10) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(192, 132, 252, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(88, 28, 135, 0.15) 0px, transparent 50%);
             color: #f8fafc;
             overflow-x: hidden;
         }
 
+        .glass-card {
+            background: rgba(19, 11, 36, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.24);
+        }
+
         .zero-logo-badge {
-            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.5));
+            filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.55));
         }
 
-        .mc-chat-box {
-            background: rgba(9, 6, 18, 0.92);
-            border: 1px solid #2e1d59;
+        .mc-chat-feed {
+            background: rgba(7, 4, 15, 0.94);
+            border: 1px solid #2d1b4e;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 7px;
             height: 7px;
         }
         ::-webkit-scrollbar-track {
-            background: #080610;
+            background: #090612;
         }
         ::-webkit-scrollbar-thumb {
             background: #3b1c71;
@@ -79,38 +85,56 @@
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-    <!-- Top Server Status Bar -->
-    <div class="bg-slate-950/90 border-b border-purple-950/70 py-2 px-4 text-xs">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+    <!-- ================================================================= -->
+    <!-- TOP REAL-TIME SERVER IP & STATUS BAR                              -->
+    <!-- ================================================================= -->
+    <div class="bg-[#06030c] border-b border-purple-900/50 py-2.5 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+            
+            <!-- Live Status & IP Copy -->
             <div class="flex flex-wrap items-center gap-3">
-                <span id="topServerStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    حالة السيرفر: متصل (Online)
+                <span id="topStatusBadge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-bold">
+                    <span id="topStatusDot" class="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></span>
+                    <span id="topStatusText">جاري فحص السيرفر الحقيقي...</span>
                 </span>
-                <button onclick="copyServerIp()" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 font-mono transition" title="اضغط لنسخ الأيبي">
-                    <i class="fa-regular fa-copy text-[10px]"></i>
-                    <span id="displayServerIp">play.zerosmp.net</span>
-                </button>
-                <span class="text-slate-400 hidden md:inline">| إصدار الجافا: <strong class="text-purple-300">1.20.4 - 1.21+</strong></span>
+
+                <div class="flex items-center bg-purple-950/60 border border-purple-500/40 rounded-xl p-0.5 pr-3">
+                    <span class="text-slate-400 ml-2 hidden sm:inline">أيبي السيرفر:</span>
+                    <span id="topServerIpText" class="font-mono font-bold text-purple-300 tracking-wide text-xs sm:text-sm ml-2">play.rioo.my</span>
+                    <button onclick="window.copyServerIp()" class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-[11px] flex items-center gap-1 transition shadow-sm">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>نسخ IP</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- Live Player Count & Refresh -->
             <div class="flex items-center gap-4 text-slate-300">
-                <span>اللاعبون الآن: <strong id="topOnlineCount" class="text-emerald-400 font-mono">8 / 100</strong></span>
-                <span class="hidden sm:inline">سرعة السيرفر (TPS): <strong id="topTpsValue" class="text-purple-400 font-mono">20.0</strong></span>
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-users text-purple-400"></i>
+                    <span>اللاعبون بالسيرفر الآن:</span>
+                    <strong id="topPlayerCounter" class="text-emerald-400 font-mono text-sm">-- / --</strong>
+                </div>
+                <button onclick="window.fetchAllRealData(true)" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-purple-900/40 text-purple-300 border border-purple-500/30 flex items-center gap-1.5 transition" title="تحديث البيانات الحقيقية">
+                    <i id="refreshSpinnerIcon" class="fa-solid fa-rotate"></i>
+                    <span class="hidden sm:inline">تحديث فوري</span>
+                </button>
             </div>
+
         </div>
     </div>
 
-    <!-- Main Navigation Header -->
+    <!-- ================================================================= -->
+    <!-- MAIN HEADER & USER ACCOUNT / GUEST LOGIN BAR                      -->
+    <!-- ================================================================= -->
     <header class="sticky top-0 z-30 backdrop-blur-xl bg-mc-bg/90 border-b border-purple-900/40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
             
-            <!-- Brand Logo (ZeroSMP Emblem + Custom Upload) -->
+            <!-- Brand Identity: ZeroSMP -->
             <div class="flex items-center gap-3.5">
-                <label for="logoUploadInput" title="اضغط لرفع صورة شعار ZeroSMP من جهازك" class="cursor-pointer group relative w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 via-fuchsia-600 to-indigo-950 p-0.5 shadow-lg shadow-purple-600/30 flex items-center justify-center transition-transform hover:scale-105">
-                    <input id="logoUploadInput" type="file" accept="image/*" class="hidden" onchange="handleCustomLogoUpload(event)">
-                    <div class="w-full h-full bg-[#120b20] rounded-[14px] flex items-center justify-center overflow-hidden relative">
-                        <img id="customLogoImg" src="" alt="ZeroSMP" class="hidden w-full h-full object-contain p-0.5">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 via-fuchsia-600 to-indigo-950 p-0.5 shadow-lg shadow-purple-600/30 flex items-center justify-center">
+                    <div class="w-full h-full bg-[#120b20] rounded-[14px] flex items-center justify-center overflow-hidden">
+                        <img id="configCustomLogo" src="" alt="ZeroSMP" class="hidden w-full h-full object-contain p-0.5">
                         <!-- Built-in SVG Recreation of ZERO SMP Logo -->
                         <svg id="defaultZeroSvg" viewBox="0 0 120 120" class="w-12 h-12 zero-logo-badge">
                             <defs>
@@ -137,1360 +161,1342 @@
                             <text x="60" y="88" text-anchor="middle" fill="#d8b4fe" font-family="Cairo, sans-serif" font-weight="900" font-size="16" letter-spacing="1.5">SMP</text>
                         </svg>
                     </div>
-                </label>
+                </div>
 
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-2xl font-black tracking-tight bg-gradient-to-l from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
+                        <h1 id="headerServerTitle" class="text-2xl font-black font-display tracking-tight bg-gradient-to-l from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
                             ZeroSMP
                         </h1>
-                        <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">
-                            بوابة السيرفر المباشرة
+                        <span id="headerIpBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono">
+                            play.rioo.my
                         </span>
                     </div>
-                    <p class="text-xs text-slate-400">الدردشة الحية بين الموقع واللعبة • حالة اللاعبين • لوحة تحكم الإدارة والـ RCON</p>
+                    <p class="text-xs text-slate-400">بوابة السيرفر الحية • شات جماعي مباشر • حالة وموارد السيرفر الفعلية</p>
                 </div>
             </div>
 
-            <!-- Navigation Tabs & Player Identity -->
-            <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
-                
-                <!-- Main View Switcher -->
-                <div class="flex bg-slate-900/95 p-1 rounded-xl border border-purple-900/50 text-xs sm:text-sm font-bold">
-                    <button onclick="switchMainTab('public')" id="navBtnPublic" class="px-3.5 py-1.5 rounded-lg bg-purple-600 text-white shadow-md shadow-purple-600/30 flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-comments"></i>
-                        <span>الشات واللاعبون</span>
-                    </button>
-                    <button onclick="switchMainTab('admin')" id="navBtnAdmin" class="px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-shield-halved text-amber-400"></i>
-                        <span>لوحة تحكم الأدمن</span>
-                        <span id="adminUnlockedBadge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
-                    </button>
-                </div>
-
-                <!-- Code Bridge Guide Button -->
-                <button onclick="openBridgeCodeModal()" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-purple-950/60 text-purple-300 border border-purple-500/30 text-xs font-bold flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-code"></i>
-                    <span class="hidden sm:inline">كود الربط (Node.js)</span>
-                </button>
-
-                <!-- Active Player Skin & Name -->
-                <div class="flex items-center bg-slate-900/90 border border-purple-900/50 rounded-xl p-1 pr-2.5">
-                    <img id="playerAvatar" src="https://mc-heads.net/avatar/Dream/64" alt="Skin" class="w-7 h-7 rounded-lg border border-purple-600/50 ml-2 bg-slate-800" onerror="this.src='https://placehold.co/64x64/1e293b/a855f7?text=Z'">
-                    <input id="mcUsernameInput" type="text" value="Ahmad_IQ" placeholder="اسمك في ماينكرافت..." 
-                        class="bg-transparent text-xs font-bold text-white focus:outline-none w-24 sm:w-28 font-mono"
-                        onchange="updatePlayerProfile()">
-                    <button onclick="updatePlayerProfile()" class="px-2.5 py-1 rounded-lg bg-purple-600/80 hover:bg-purple-500 text-white font-bold text-[11px] transition">
-                        تحديث
+            <!-- Real User Session Widget (Registered Account or Guest) -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2.5 bg-slate-900/95 border border-purple-800/60 rounded-2xl p-1.5 pr-3 shadow-md">
+                    <img id="currentUserAvatar" src="https://mc-heads.net/avatar/MHF_Steve/64" alt="Avatar" class="w-9 h-9 rounded-xl border border-purple-500/50 bg-slate-950">
+                    <div class="text-right">
+                        <div class="flex items-center gap-1.5">
+                            <span id="currentUserName" class="text-xs sm:text-sm font-extrabold text-white font-mono">جاري التحميل...</span>
+                            <span id="currentUserBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">ضيف</span>
+                        </div>
+                        <p id="currentUserStatusText" class="text-[10px] text-slate-400">متصل في الشات الحي</p>
+                    </div>
+                    <button onclick="window.openAuthModal()" class="mr-2 px-3 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-purple-600/20 transition">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span id="authActionBtnText">حسابي / دخول</span>
                     </button>
                 </div>
-
             </div>
+
         </div>
     </header>
 
-    <!-- ========================================== -->
-    <!-- VIEW 1: PUBLIC PLAYERS & LIVE CHAT PORTAL  -->
-    <!-- ========================================== -->
-    <main id="publicPortalView" class="max-w-7xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+    <!-- ================================================================= -->
+    <!-- MAIN PORTAL CONTENT                                               -->
+    <!-- ================================================================= -->
+    <main class="max-w-7xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
 
-        <!-- Quick Server Info Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-            <div class="bg-mc-card border border-mc-border rounded-2xl p-4 flex items-center gap-3.5 shadow-lg">
-                <div class="w-11 h-11 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg">
-                    <i class="fa-solid fa-users"></i>
+        <!-- HERO SERVER IP & REAL MOTD CALLOUT BANNER -->
+        <div class="glass-card rounded-3xl p-5 sm:p-6 relative overflow-hidden shadow-2xl">
+            <div class="absolute -left-16 -top-16 w-56 h-56 bg-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                <div class="space-y-1.5">
+                    <div class="inline-flex items-center gap-2 text-xs font-bold text-purple-300 bg-purple-500/15 border border-purple-500/30 px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+                        <span>بيانات حية ومباشرة من السيرفر والاستضافة</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black font-display text-white">مرحباً بك في مجتمع <span class="text-purple-400">ZeroSMP</span> الرسمي</h2>
+                    <p id="serverMotdDisplay" class="text-xs sm:text-sm text-slate-300 font-mono bg-slate-950/60 border border-slate-800/80 px-3 py-1.5 rounded-xl inline-block">
+                        جاري جلب رسالة السيرفر (MOTD) الحقيقية من play.rioo.my...
+                    </p>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-400">اللاعبون المتصلون</div>
-                    <div class="text-lg font-black text-white font-mono" id="statOnlinePlayers">8 / 100</div>
-                </div>
-            </div>
 
-            <div class="bg-mc-card border border-mc-border rounded-2xl p-4 flex items-center gap-3.5 shadow-lg">
-                <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg">
-                    <i class="fa-solid fa-gauge-high"></i>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-400">أداء السيرفر (TPS)</div>
-                    <div class="text-lg font-black text-emerald-400 font-mono" id="statTps">20.0 مستقر</div>
-                </div>
-            </div>
-
-            <div class="bg-mc-card border border-mc-border rounded-2xl p-4 flex items-center gap-3.5 shadow-lg">
-                <div class="w-11 h-11 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg">
-                    <i class="fa-solid fa-language"></i>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-400">شات اللعبة والموقع</div>
-                    <div class="text-sm font-extrabold text-cyan-300">يدعم العربية 100%</div>
-                </div>
-            </div>
-
-            <div class="bg-mc-card border border-mc-border rounded-2xl p-4 flex items-center gap-3.5 shadow-lg">
-                <div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg">
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-400">إدارة السيرفر</div>
-                    <button onclick="switchMainTab('admin')" class="text-xs font-extrabold text-amber-400 hover:underline flex items-center gap-1">
-                        <span>دخول لوحة التحكم</span>
-                        <i class="fa-solid fa-arrow-left text-[10px]"></i>
-                    </button>
+                <!-- Large Copyable IP Box -->
+                <div onclick="window.copyServerIp()" class="cursor-pointer group bg-slate-950/90 hover:bg-slate-900 border-2 border-purple-500/50 hover:border-purple-400 rounded-2xl p-3.5 px-5 flex items-center gap-4 transition shadow-lg shadow-purple-950/50 w-full md:w-auto justify-between md:justify-start">
+                    <div>
+                        <div class="text-[10px] font-bold text-purple-300 uppercase tracking-wider">اضغط لنسخ أيبي السيرفر</div>
+                        <div id="heroServerIp" class="text-lg sm:text-xl font-black font-mono text-white tracking-wide group-hover:text-purple-300 transition">play.rioo.my</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-purple-600/20 group-hover:bg-purple-600 text-purple-300 group-hover:text-white border border-purple-500/40 flex items-center justify-center text-base transition">
+                        <i class="fa-regular fa-copy"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Grid: Live Game-Web Chat (7 Cols) + Online Players List (5 Cols) -->
+        <!-- ============================================================= -->
+        <!-- REAL SERVER STATUS, PLAYERS, RAM, & STORAGE CARDS             -->
+        <!-- ============================================================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- 1. Real Server Status Card -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-400">حالة السيرفر (Status)</span>
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="cardStatusIndicator" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+                        <span id="cardStatusTitle" class="text-lg font-black font-display text-slate-300">جاري الفحص...</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1.5 flex items-center justify-between font-mono">
+                        <span id="cardVersionText">الإصدار: --</span>
+                        <span class="text-purple-300" id="cardHostStateText">البانل: --</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Real Online Players Count Card -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-400">اللاعبون المتصلون فعلياً</span>
+                    <div class="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-baseline justify-between">
+                        <span id="cardPlayersCount" class="text-xl font-black font-mono text-white">-- / --</span>
+                        <span id="cardPlayersPercent" class="text-xs font-mono text-purple-300">0%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden mt-2 border border-slate-800">
+                        <div id="cardPlayersBar" class="h-full bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
+                        <span>مباشر من <code class="text-purple-300">play.rioo.my</code></span>
+                        <span id="webVisitorsCount" class="text-emerald-400 font-bold">زوار الموقع: 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Real Server RAM Card (From Pterodactyl API / Code Config) -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-400">الذاكرة العشوائية (RAM)</span>
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                        <i class="fa-solid fa-memory"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-baseline justify-between">
+                        <span id="cardRamText" class="text-base sm:text-lg font-black font-mono text-white">-- / -- GB</span>
+                        <span id="cardRamPercent" class="text-xs font-mono text-cyan-400">--%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden mt-2 border border-slate-800">
+                        <div id="cardRamBar" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div id="cardRamSubtext" class="text-[10px] text-slate-400 font-mono mt-1 truncate">من إعدادات الكود / البانل</div>
+                </div>
+            </div>
+
+            <!-- 4. Real Storage Unit (Disk) Card (From Pterodactyl API / Code Config) -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-400">وحدة التخزين (Storage)</span>
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <i class="fa-solid fa-hard-drive"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-baseline justify-between">
+                        <span id="cardStorageText" class="text-base sm:text-lg font-black font-mono text-white">-- / -- GB</span>
+                        <span id="cardStoragePercent" class="text-xs font-mono text-amber-400">--%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden mt-2 border border-slate-800">
+                        <div id="cardStorageBar" class="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div id="cardStorageSubtext" class="text-[10px] text-slate-400 font-mono mt-1 truncate">من إعدادات الكود / البانل</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- MAIN GRID: 100% REAL MULTI-USER CHAT (7) + REAL PLAYERS (5)   -->
+        <!-- ============================================================= -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <!-- LIVE BIDIRECTIONAL GAME & WEB CHAT (7 Cols) -->
-            <div class="lg:col-span-7 bg-mc-card border border-mc-border rounded-2xl flex flex-col shadow-2xl overflow-hidden h-[580px]">
+            <!-- 100% REAL LIVE CHAT BOX (7 Cols) -->
+            <div class="lg:col-span-7 glass-card rounded-3xl flex flex-col shadow-2xl overflow-hidden h-[620px]">
                 
                 <!-- Chat Header -->
-                <div class="px-5 py-3.5 bg-slate-900/90 border-b border-mc-border flex flex-wrap items-center justify-between gap-2">
+                <div class="px-5 py-4 bg-slate-950/85 border-b border-mc-border flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5">
-                        <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="chatRealtimeDot" class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
                         <div>
-                            <h2 class="font-extrabold text-white text-base flex items-center gap-2">
-                                <span>الشات المشترك المباشر (اللعبة ⇄ الموقع)</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">RCON Bridge</span>
+                            <h2 class="font-extrabold font-display text-white text-base flex items-center gap-2">
+                                <span>الشات الجماعي المباشر (حقيقي 100%)</span>
+                                <span id="chatSyncBadge" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono">متصل بالسحابة الحية</span>
                             </h2>
-                            <p class="text-[11px] text-slate-400">رسائلك هنا تظهر فوراً لجميع اللاعبين داخل سيرفر ZeroSMP بالعربية الكاملة</p>
+                            <p class="text-[11px] text-slate-400">أي رسالة ترسلها تظهر فوراً لجميع زوار الموقع وتُرسل للسيرفر عبر RCON</p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <button onclick="simulateIncomingGameChat()" title="محاكاة رسالة قادمة من داخل اللعبة" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-500/20 transition flex items-center gap-1">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span>رسالة تجريبية</span>
+                        <button onclick="window.toggleChatSound()" id="soundToggleBtn" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-purple-300 border border-slate-700 text-xs flex items-center gap-1.5 transition" title="صوت الإشعارات">
+                            <i id="soundToggleIcon" class="fa-solid fa-volume-high"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Chat Messages Feed -->
-                <div id="liveChatFeed" class="flex-1 p-4 overflow-y-auto space-y-2.5 mc-chat-box">
-                    <!-- Populated by JS -->
+                <!-- Real-Time Chat Messages Feed -->
+                <div id="liveChatFeed" class="flex-1 p-4 overflow-y-auto space-y-3 mc-chat-feed">
+                    <div class="h-full flex flex-col items-center justify-center text-center text-slate-400 space-y-2">
+                        <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-400"></i>
+                        <p class="text-xs">جاري الاتصال بقاعدة بيانات الشات المباشر...</p>
+                    </div>
                 </div>
 
-                <!-- Quick Arabic Phrases & Emoji Bar -->
-                <div class="px-4 py-2 bg-slate-900/90 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+                <!-- Quick Arabic Phrases Bar -->
+                <div class="px-4 py-2 bg-slate-950/90 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto text-xs">
                     <span class="text-slate-400 text-[11px] ml-1 whitespace-nowrap">رسائل سريعة:</span>
-                    <button onclick="insertQuickChat('علالي وتوجي يحبون 67')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-600/30 text-slate-200 whitespace-nowrap transition">السلام عليكم 👋</button>
-                    <button onclick="insertQuickChat('منو يجي نروح نلعب بوبج 🔥')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-600/30 text-slate-200 whitespace-nowrap transition">نروح للنيذر؟ 🔥</button>
-                    <button onclick="insertQuickChat('جاكس ابن البصره')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-600/30 text-slate-200 whitespace-nowrap transition">أحتاج مساعدة 🛡️</button>
-                    <button onclick="insertQuickChat('ليدر وينك')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-600/30 text-slate-200 whitespace-nowrap transition">كفو يابطل 👑</button>
+                    <button type="button" onclick="window.insertQuickPhrase('السلام عليكم شباب 👋')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-purple-600/30 border border-slate-800 text-slate-200 whitespace-nowrap transition">السلام عليكم 👋</button>
+                    <button type="button" onclick="window.insertQuickPhrase('منو يدخل للسيرفر هسه؟ play.rioo.my 🎮')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-purple-600/30 border border-slate-800 text-slate-200 whitespace-nowrap transition">منو يدخل هسه؟ 🎮</button>
+                    <button type="button" onclick="window.insertQuickPhrase('أحتاج تيم بالسباون 🛡️')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-purple-600/30 border border-slate-800 text-slate-200 whitespace-nowrap transition">أحتاج تيم 🛡️</button>
+                    <button type="button" onclick="window.insertQuickPhrase('حياكم الله بسيرفر ZeroSMP 🔥')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-purple-600/30 border border-slate-800 text-slate-200 whitespace-nowrap transition">حياكم الله 🔥</button>
                 </div>
 
                 <!-- Chat Input Form -->
-                <form onsubmit="sendWebChatMessage(event)" class="p-3.5 bg-slate-950 border-t border-mc-border flex items-center gap-2.5">
+                <form onsubmit="window.handleSendChatMessage(event)" class="p-3.5 bg-slate-950 border-t border-mc-border flex items-center gap-2.5">
+                    <button type="button" onclick="window.openAuthModal()" title="تبديل الحساب أو الاسم" class="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center gap-1.5 transition shrink-0">
+                        <img id="chatInputAvatar" src="https://mc-heads.net/avatar/MHF_Steve/40" class="w-7 h-7 rounded-lg" alt="User">
+                    </button>
+
                     <div class="flex-1 relative">
-                        <input id="webChatInput" type="text" dir="auto" placeholder="اكتب رسالتك بالعربية أو الإنجليزية لتظهر داخل شات السيرفر..." 
+                        <input id="webChatInput" type="text" dir="auto" maxlength="240" placeholder="اكتب رسالتك هنا لتظهر للجميع فوراً..." 
                             class="w-full bg-slate-900 border border-purple-900/60 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition">
                     </div>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 transition whitespace-nowrap">
-                        <span>إرسال للعبة</span>
+
+                    <button id="sendChatBtn" type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 transition whitespace-nowrap">
+                        <span>إرسال</span>
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </form>
+
             </div>
 
-            <!-- ONLINE PLAYERS LIST & WORLD INFO (5 Cols) -->
+            <!-- REAL ONLINE PLAYERS & HARDWARE SPECS (5 Cols) -->
             <div class="lg:col-span-5 flex flex-col gap-6">
-                
-                <!-- Online Players Box -->
-                <div class="bg-mc-card border border-mc-border rounded-2xl flex flex-col shadow-2xl overflow-hidden flex-1">
-                    <div class="px-5 py-3.5 bg-slate-900/90 border-b border-mc-border flex items-center justify-between">
+
+                <!-- Real Connected Minecraft Players Card -->
+                <div class="glass-card rounded-3xl flex flex-col shadow-2xl overflow-hidden flex-1 min-h-[340px]">
+                    <div class="px-5 py-4 bg-slate-950/85 border-b border-mc-border flex items-center justify-between">
                         <div>
-                            <h2 class="font-extrabold text-white text-base flex items-center gap-2">
-                                <i class="fa-solid fa-user-astronaut text-purple-400"></i>
-                                <span>اللاعبون المتصلون الآن في ZeroSMP</span>
+                            <h2 class="font-extrabold font-display text-white text-base flex items-center gap-2">
+                                <i class="fa-solid fa-users-viewfinder text-purple-400"></i>
+                                <span>اللاعبون داخل السيرفر الآن</span>
                             </h2>
-                            <p class="text-[11px] text-slate-400">اضغط على أي لاعب لعرض معلوماته أو مراسلته خاص داخل اللعبة</p>
+                            <p class="text-[11px] text-slate-400">بيانات حقيقية مباشرة من <span class="font-mono text-purple-300">play.rioo.my</span></p>
                         </div>
-                        <button onclick="refreshOnlinePlayers()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-purple-600/20 text-purple-300 flex items-center justify-center transition" title="تحديث القائمة">
-                            <i class="fa-solid fa-rotate"></i>
-                        </button>
+                        <span id="sidebarOnlineBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                            0 متصل
+                        </span>
                     </div>
 
-                    <!-- Search Player -->
-                    <div class="p-3 bg-slate-950/60 border-b border-slate-800/80">
+                    <!-- Search Player Input -->
+                    <div class="p-3 bg-slate-950/50 border-b border-slate-800/80">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-2.5 text-slate-500 text-xs"></i>
-                            <input id="playerSearchInput" type="text" oninput="renderOnlinePlayers()" placeholder="ابحث عن لاعب متصل..." 
-                                class="w-full bg-slate-900 border border-slate-800 rounded-xl pr-9 pl-3 py-1.5 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <i class="fa-solid fa-magnifying-glass text-slate-500 absolute right-3.5 top-1/2 -translate-y-1/2 text-xs"></i>
+                            <input id="playerSearchInput" oninput="window.renderOnlinePlayersList()" type="text" placeholder="ابحث عن اسم لاعب متصل حالياً..." 
+                                class="w-full bg-slate-900 border border-slate-800 focus:border-purple-500 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none">
                         </div>
                     </div>
 
                     <!-- Players List Container -->
-                    <div id="onlinePlayersList" class="p-3 space-y-2 overflow-y-auto max-h-[340px]">
-                        <!-- Populated dynamically by JS -->
+                    <div id="onlinePlayersListContainer" class="flex-1 p-3.5 overflow-y-auto space-y-2 max-h-[260px]">
+                        <!-- Populated with 100% real players from API -->
                     </div>
                 </div>
 
-                <!-- Server Announcements & Rules Card -->
-                <div class="bg-mc-card border border-mc-border rounded-2xl p-4 space-y-3 shadow-lg">
-                    <h3 class="font-extrabold text-sm text-purple-300 flex items-center gap-2">
-                        <i class="fa-solid fa-bullhorn text-amber-400"></i>
-                        <span>آخر إعلانات وقوانين سيرفر ZeroSMP</span>
-                    </h3>
-                    <ul id="publicAnnouncementsList" class="text-xs text-slate-300 space-y-2 leading-relaxed">
-                        <li class="flex items-start gap-2 bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                            <span class="text-purple-400 font-bold">✦</span>
-                            <span>مرحباً بكم في بوابة <strong>ZeroSMP</strong>! يمكنك الآن التحدث مع أصدقائك داخل السيرفر مباشرة من الموبايل.</span>
-                        </li>
-                        <li class="flex items-start gap-2 bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                            <span class="text-emerald-400 font-bold">✦</span>
-                            <span>يُمنع استخدام الهاكات (X-Ray / Fly) أو السب في الشات العام، المراقبة تعمل تلقائياً عبر الـ RCON.</span>
-                        </li>
-                    </ul>
+                <!-- Real Server Hardware & Connection Details Card -->
+                <div class="glass-card rounded-3xl p-5 space-y-4 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-microchip text-purple-400"></i>
+                            <h3 class="font-extrabold font-display text-white text-sm">موارد وبيانات خادم ZeroSMP</h3>
+                        </div>
+                        <span id="specsSourceBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-purple-300 border border-purple-500/30">SERVER_CONFIG</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3">
+                            <div class="text-slate-400 text-[11px]">المعالج واستهلاك CPU</div>
+                            <div id="specCpuValue" class="font-bold font-mono text-white mt-1 text-sm">--</div>
+                        </div>
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3">
+                            <div class="text-slate-400 text-[11px]">مدة التشغيل (Uptime)</div>
+                            <div id="specUptimeValue" class="font-bold font-mono text-emerald-400 mt-1 text-sm">--</div>
+                        </div>
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3">
+                            <div class="text-slate-400 text-[11px]">عنوان الاتصال الرسمي</div>
+                            <div id="specHostValue" class="font-bold font-mono text-purple-300 mt-1 text-sm">play.rioo.my</div>
+                        </div>
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3">
+                            <div class="text-slate-400 text-[11px]">حالة ربط RCON / البانل</div>
+                            <div id="specBridgeStatus" class="font-bold font-mono text-amber-400 mt-1 text-xs">من الكود</div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
         </div>
+
     </main>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: ADMIN LOGIN & CONTROL PANEL        -->
-    <!-- ========================================== -->
-    <section id="adminPanelView" class="hidden max-w-7xl mx-auto w-full px-4 py-6 flex-1">
-
-        <!-- SUB-VIEW 2A: ADMIN LOGIN GATE -->
-        <div id="adminLoginGate" class="max-w-md mx-auto my-8 bg-mc-card border border-purple-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-purple-950/50">
-            <div class="text-center space-y-2 mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-purple-600/20 border border-purple-500/40 mx-auto flex items-center justify-center text-purple-300 text-2xl shadow-inner">
-                    <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <h2 class="text-xl font-black text-white">تسجيل دخول إدارة ZeroSMP</h2>
-                <p class="text-xs text-slate-400">لوحة التحكم الكاملة بالـ RCON ومفتاح استضافة السيرفر (API Key)</p>
-            </div>
-
-            <!-- Default Admin Credentials Box (Requested by User) -->
-            <div class="bg-purple-950/40 border border-purple-500/30 rounded-2xl p-3.5 mb-5 text-xs space-y-1.5">
-                <div class="flex items-center justify-between">
-                    <span class="font-extrabold text-purple-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-key text-amber-400"></i>
-                        <span>بيانات دخول الأدمن الافتراضية:</span>
-                    </span>
-                    <button type="button" onclick="autoFillAdminLogin()" class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-[11px] transition">
-                        تعبئة تلقائية
-                    </button>
-                </div>
-                <div class="flex items-center justify-between text-slate-300 font-mono bg-slate-950/80 px-3 py-1.5 rounded-lg">
-                    <span>User: <strong class="text-emerald-400" id="hintAdminUser">LRADER</strong></span>
-                    <span>Pass: <strong class="text-amber-400" id="hintAdminPass">leader7368</strong></span>
-                </div>
-            </div>
-
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1.5">اسم مستخدم الأدمن (Username):</label>
-                    <input id="adminUserInput" type="text" required placeholder="admin" dir="ltr"
-                        class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1.5">كلمة المرور (Password):</label>
-                    <input id="adminPassInput" type="password" required placeholder="••••••••••••" dir="ltr"
-                        class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none">
-                </div>
-                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-extrabold text-sm shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>دخول لوحة تحكم السيرفر</span>
-                </button>
-            </form>
-        </div>
-
-        <!-- SUB-VIEW 2B: AUTHENTICATED ADMIN DASHBOARD -->
-        <div id="adminDashboardContent" class="hidden space-y-6">
-
-            <!-- Admin Top Bar -->
-            <div class="bg-gradient-to-r from-purple-950/80 via-slate-900 to-slate-900 border border-purple-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 text-xl">
-                        <i class="fa-solid fa-sliders"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-black text-white flex items-center gap-2">
-                            <span>لوحة الإدارة المركزية — ZeroSMP</span>
-                            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">صلاحيات كاملة (Root Admin)</span>
-                        </h2>
-                        <p class="text-xs text-slate-400">تحكم بتشغيل الاستضافة، إعدادات الـ RCON، الـ API Key، الكونسول المباشر، وإدارة اللاعبين</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2.5">
-                    <button onclick="openAdminCredentialsModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-user-lock text-amber-400"></i>
-                        <span>تغيير يوزر وباسورد الأدمن</span>
-                    </button>
-                    <button onclick="logoutAdmin()" class="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span>تسجيل خروج</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- ROW 1: HOSTING POWER CONTROLS & RESOURCE MONITOR -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Server Power Controls (5 Cols) -->
-                <div class="lg:col-span-5 bg-mc-card border border-mc-border rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-extrabold text-white text-base flex items-center gap-2">
-                                <i class="fa-solid fa-bolt text-amber-400"></i>
-                                <span>التحكم بتشغيل السيرفر (Hosting Power)</span>
-                            </h3>
-                            <p class="text-[11px] text-slate-400">مرتبط بمفتاح الاستضافة (Pterodactyl API Key)</p>
-                        </div>
-                        <span id="powerStateLabel" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold">
-                            RUNNING
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        <button onclick="sendHostPowerSignal('start')" class="py-3 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-300 border border-emerald-500/40 font-extrabold text-xs flex flex-col items-center gap-1.5 transition">
-                            <i class="fa-solid fa-play text-base"></i>
-                            <span>تشغيل (Start)</span>
-                        </button>
-                        <button onclick="sendHostPowerSignal('restart')" class="py-3 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-300 border border-amber-500/40 font-extrabold text-xs flex flex-col items-center gap-1.5 transition">
-                            <i class="fa-solid fa-rotate-right text-base"></i>
-                            <span>إعادة تشغيل</span>
-                        </button>
-                        <button onclick="sendHostPowerSignal('stop')" class="py-3 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-300 border border-rose-500/40 font-extrabold text-xs flex flex-col items-center gap-1.5 transition">
-                            <i class="fa-solid fa-stop text-base"></i>
-                            <span>إيقاف (Stop)</span>
-                        </button>
-                        <button onclick="sendHostPowerSignal('kill')" class="py-3 px-3 rounded-xl bg-slate-800 hover:bg-red-700 text-slate-300 hover:text-white border border-slate-700 font-extrabold text-xs flex flex-col items-center gap-1.5 transition">
-                            <i class="fa-solid fa-skull text-base"></i>
-                            <span>إيقاف إجباري</span>
-                        </button>
-                    </div>
-
-                    <!-- Quick Broadcast Input -->
-                    <div class="pt-2 border-t border-slate-800/80">
-                        <label class="block text-xs font-bold text-slate-300 mb-1.5">إرسال إعلان عاجل وسط شاشة اللاعبين (Title &amp; Chat):</label>
-                        <div class="flex items-center gap-2">
-                            <input id="adminBroadcastInput" type="text" placeholder="مثال: سيتم عمل ريستارت للسيرفر بعد 5 دقائق..." 
-                                class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
-                            <button onclick="sendAdminBroadcast()" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs whitespace-nowrap transition">
-                                بث الإعلان
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Hosting Resources Gauges (7 Cols) -->
-                <div class="lg:col-span-7 bg-mc-card border border-mc-border rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-extrabold text-white text-base flex items-center gap-2">
-                                <i class="fa-solid fa-microchip text-cyan-400"></i>
-                                <span>مراقب موارد الاستضافة الحي (CPU / RAM / Disk)</span>
-                            </h3>
-                            <p class="text-[11px] text-slate-400">قراءة استهلاك الهاردوير من استضافة سيرفر ZeroSMP</p>
-                        </div>
-                        <span class="text-xs font-mono text-slate-400">Uptime: <strong id="adminUptime" class="text-purple-300">4d 11h 28m</strong></span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <!-- CPU Card -->
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">المعالج (CPU Load)</span>
-                                <strong id="cpuValText" class="text-cyan-400 font-mono">34%</strong>
-                            </div>
-                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                                <div id="cpuBar" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-500" style="width: 34%"></div>
-                            </div>
-                            <div class="text-[10px] text-slate-500 font-mono">AMD Ryzen 9 7950X (4 vCores)</div>
-                        </div>
-
-                        <!-- RAM Card -->
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">الرامات (Memory)</span>
-                                <strong id="ramValText" class="text-purple-400 font-mono">6.4 / 16 GB</strong>
-                            </div>
-                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                                <div id="ramBar" class="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-full transition-all duration-500" style="width: 40%"></div>
-                            </div>
-                            <div class="text-[10px] text-slate-500 font-mono">DDR5 ECC Allocated</div>
-                        </div>
-
-                        <!-- Disk Card -->
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">مساحة التخزين (NVMe)</span>
-                                <strong class="text-emerald-400 font-mono">18.2 / 80 GB</strong>
-                            </div>
-                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-emerald-500 rounded-full" style="width: 23%"></div>
-                            </div>
-                            <div class="text-[10px] text-slate-500 font-mono">World Size: 14.8 GB</div>
-                        </div>
-                    </div>
-
-                    <!-- Quick World Control Buttons -->
-                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80 text-xs">
-                        <span class="text-slate-400 ml-1">أوامر سريعة للعالم:</span>
-                        <button onclick="executeAdminQuickCmd('time set day', 'تم تحويل وقت السيرفر إلى النهار ☀️')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-500/20 hover:text-amber-300 text-slate-200 transition">☀️ وقت النهار</button>
-                        <button onclick="executeAdminQuickCmd('weather clear', 'تم تصفية الطقس وإيقاف المطر 🌤️')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-cyan-500/20 hover:text-cyan-300 text-slate-200 transition">🌤️ طقس صافي</button>
-                        <button onclick="executeAdminQuickCmd('save-all', 'تم حفظ العالم بالكامل (Save-All) 💾')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-500/20 hover:text-emerald-300 text-slate-200 transition">💾 حفظ العالم</button>
-                        <button onclick="executeAdminQuickCmd('whitelist on', 'تم تفعيل الوايت-ليست (Whitelist ON) 🔒')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-purple-500/20 hover:text-purple-300 text-slate-200 transition">🔒 تفعيل Whitelist</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ROW 2: RCON SETTINGS & HOSTING API KEY CONFIGURATION -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                <!-- 1. RCON Configuration Box -->
-                <div class="bg-mc-card border border-mc-border rounded-2xl p-5 space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                                <i class="fa-solid fa-terminal"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-extrabold text-white text-sm sm:text-base">إعدادات اتصال الـ RCON (ماينكرافت جافا)</h3>
-                                <p class="text-[11px] text-slate-400">تُستخدم لإرسال رسائل الشات العربي، الأوامر، وإدارة اللاعبين</p>
-                            </div>
-                        </div>
-                        <span id="rconConnBadge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">جاهز ومتصل</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                        <div class="sm:col-span-2">
-                            <label class="block text-slate-300 font-bold mb-1">أيبي السيرفر أو الدومين (RCON Host):</label>
-                            <input id="cfgRconHost" type="text" dir="ltr" value="play.rioo.my" 
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-3.5 py-2 text-white font-mono focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-slate-300 font-bold mb-1">بورت الـ RCON:</label>
-                            <input id="cfgRconPort" type="number" dir="ltr" value="28727" 
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-3.5 py-2 text-amber-400 font-mono focus:outline-none">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div>
-                            <label class="block text-slate-300 font-bold mb-1">كلمة سر الـ RCON (Password):</label>
-                            <div class="relative">
-                                <input id="cfgRconPass" type="password" dir="ltr" value="leader7368" 
-                                    class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-3.5 py-2 text-emerald-400 font-mono focus:outline-none">
-                                <button type="button" onclick="toggleInputVisibility('cfgRconPass')" class="absolute right-3 top-2 text-slate-400 hover:text-white">
-                                    <i class="fa-regular fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-slate-300 font-bold mb-1">رابط جسر الباك-إند (Backend Bridge URL):</label>
-                            <input id="cfgBridgeUrl" type="text" dir="ltr" value="http://localhost:3000" placeholder="https://your-bridge.onrender.com"
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-3.5 py-2 text-cyan-400 font-mono focus:outline-none">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                        <button onclick="testRconConnection()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-500/30 text-xs font-bold flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-plug-circle-Bolt"></i>
-                            <span>اختبار اتصال الـ RCON</span>
-                        </button>
-                        <button onclick="saveAllAdminConfig()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-purple-600/20 transition">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            <span>حفظ إعدادات الـ RCON</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 2. Hosting API Key Controller (Pterodactyl / Panel API) -->
-                <div class="bg-mc-card border border-mc-border rounded-2xl p-5 space-y-4 shadow-xl">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                                <i class="fa-solid fa-key"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-extrabold text-white text-sm sm:text-base">إعدادات الاستضافة ومفتاح الـ API Key</h3>
-                                <p class="text-[11px] text-slate-400">يدعم لوحات Pterodactyl وجميع استضافات ماينكرافت الحديثة</p>
-                            </div>
-                        </div>
-                        <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono">Pterodactyl v1</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                        <div class="sm:col-span-2">
-                            <label class="block text-slate-300 font-bold mb-1">رابط لوحة الاستضافة (Hosting Panel URL):</label>
-                            <input id="cfgPanelUrl" type="text" dir="ltr" value="https://panel.partner-hosting.com/" placeholder="https://panel.example.com"
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2 text-white font-mono focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-slate-300 font-bold mb-1">معرّف السيرفر (Server ID):</label>
-                            <input id="cfgServerId" type="text" dir="ltr" value="32b0d6c6-a599-486e-99c3-eec98782b792" placeholder="e.g. a8f92c1b"
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2 text-amber-400 font-mono focus:outline-none">
-                        </div>
-                    </div>
-
-                    <div class="text-xs">
-                        <label class="block text-slate-300 font-bold mb-1">مفتاح الـ API للاستضافة (Client / Application API Key):</label>
-                        <div class="relative">
-                            <input id="cfgApiKey" type="password" dir="ltr" value="ptlc_zU9k1fTsLwukm768yWvOxy8suibLwyDEYlYsk0IzYcl
-" placeholder="ptlc_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                                class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2 text-emerald-400 font-mono focus:outline-none">
-                            <button type="button" onclick="toggleInputVisibility('cfgApiKey')" class="absolute right-3 top-2 text-slate-400 hover:text-white">
-                                <i class="fa-regular fa-eye"></i>
-                            </button>
-                        </div>
-                        <p class="text-[10px] text-slate-500 mt-1">يمكنك استخراج المفتاح من لوحة الاستضافة عبر: Account Settings &rarr; API Credentials &rarr; Create API Key</p>
-                    </div>
-
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                        <button onclick="testHostingApi()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-satellite-dish"></i>
-                            <span>فحص مفتاح الـ API</span>
-                        </button>
-                        <button onclick="saveAllAdminConfig()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-amber-500/20 transition">
-                            <i class="fa-solid fa-check-double"></i>
-                            <span>حفظ إعدادات الـ API Key</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ROW 3: LIVE RCON TERMINAL & PLAYER MODERATION TABLE -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                <!-- Full RCON Console Terminal (7 Cols) -->
-                <div class="lg:col-span-7 bg-slate-950 border border-mc-border rounded-2xl overflow-hidden shadow-2xl flex flex-col">
-                    <div class="bg-slate-900/90 px-4 py-3 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                            <span class="text-xs font-mono font-bold text-purple-400 mr-2">ZeroSMP Root RCON &amp; Hosting Console</span>
-                        </div>
-                        <button onclick="clearRconConsole()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition">مسح السجل</button>
-                    </div>
-
-                    <div id="rconTerminal" dir="ltr" class="p-4 font-mono text-xs space-y-1.5 h-72 overflow-y-auto bg-[#06040b] text-slate-300 flex-1">
-                        <div class="text-slate-500">[System]: ZeroSMP Control Center initialized.</div>
-                        <div class="text-purple-400">[RCON]: Connected to play.zerosmp.net:25575 (UTF-8 Arabic Chat Bridge Ready).</div>
-                        <div class="text-amber-400">[Hosting-API]: Linked to Pterodactyl Server ID #a8f92c1b via API Key.</div>
-                    </div>
-
-                    <div dir="ltr" class="bg-slate-900/80 border-t border-slate-800 px-4 py-2.5 flex items-center gap-2">
-                        <span class="text-emerald-400 font-mono font-bold text-sm">&gt;</span>
-                        <input id="customRconInput" type="text" placeholder="اكتب أي أمر RCON هنا (مثال: op Ahmad_IQ أو say هلا بالشباب أو gamemode creative ...)" 
-                            class="bg-transparent text-xs font-mono text-white w-full focus:outline-none"
-                            onkeydown="if(event.key==='Enter') sendCustomRconCommand()">
-                        <button onclick="sendCustomRconCommand()" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-mono font-bold whitespace-nowrap transition">
-                            تنفيذ الأمر
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Quick Player Moderation Panel (5 Cols) -->
-                <div class="lg:col-span-5 bg-mc-card border border-mc-border rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xl">
-                    <div>
-                        <h3 class="font-extrabold text-white text-base flex items-center gap-2 mb-1">
-                            <i class="fa-solid fa-gavel text-rose-400"></i>
-                            <span>إدارة اللاعبين السريعة (Player Moderation)</span>
-                        </h3>
-                        <p class="text-[11px] text-slate-400 mb-3">اختر لاعباً متصلاً لتنفيذ أوامر الإدارة الفورية عليه عبر الـ RCON</p>
-
-                        <div class="space-y-3 text-xs">
-                            <div>
-                                <label class="block text-slate-300 font-bold mb-1">اسم اللاعب المستهدف:</label>
-                                <select id="modTargetPlayer" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white font-mono focus:outline-none focus:border-purple-500">
-                                    <!-- Populated by JS -->
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2 pt-1">
-                                <button onclick="modPlayerAction('op')" class="py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-crown"></i> إعطاء OP
-                                </button>
-                                <button onclick="modPlayerAction('heal')" class="py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-heart-pulse"></i> شفاء وإطعام
-                                </button>
-                                <button onclick="modPlayerAction('gm_creative')" class="py-2.5 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-cubes"></i> كريتيف (Creative)
-                                </button>
-                                <button onclick="modPlayerAction('tp_spawn')" class="py-2.5 px-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-location-crosshairs"></i> سحب للسباون
-                                </button>
-                                <button onclick="modPlayerAction('kick')" class="py-2.5 px-3 rounded-xl bg-orange-500/15 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-shoe-prints"></i> طرد (Kick)
-                                </button>
-                                <button onclick="modPlayerAction('ban')" class="py-2.5 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 font-bold flex items-center justify-center gap-1.5 transition">
-                                    <i class="fa-solid fa-ban"></i> حظر نهائي (Ban)
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Add New Online Player Simulator (for testing) -->
-                    <div class="pt-3 border-t border-slate-800/80 text-xs">
-                        <label class="block text-slate-400 mb-1.5">إضافة إعلان جديد في الصفحة الرئيسية للموقع:</label>
-                        <div class="flex items-center gap-2">
-                            <input id="newSiteRuleInput" type="text" placeholder="اكتب قانوناً أو خبراً جديداً للاعبين..." 
-                                class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none">
-                            <button onclick="addPublicAnnouncement()" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold whitespace-nowrap transition">
-                                إضافة للموقع
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t border-purple-950/60 bg-slate-950/80 py-5 px-4 mt-8 text-xs text-slate-400">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+    <!-- ================================================================= -->
+    <!-- FOOTER & NODE.JS BRIDGE CODE HELPER                               -->
+    <!-- ================================================================= -->
+    <footer class="mt-8 border-t border-purple-950/60 bg-[#06030c] py-5 px-4 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                <strong class="text-white">ZeroSMP Network Portal</strong> — بوابة اللاعبين، الشات المباشر، ولوحة تحكم الـ RCON والاستضافة
+                <span class="font-bold text-white">ZeroSMP</span>
+                <span>•</span>
+                <span class="font-mono text-purple-400">play.rioo.my</span>
+                <span>•</span>
+                <span>جميع البيانات والشات حقيقية ومباشرة</span>
             </div>
-            <div class="flex items-center gap-4">
-                <button onclick="openBridgeCodeModal()" class="text-purple-400 hover:underline flex items-center gap-1">
-                    <i class="fa-solid fa-server"></i>
-                    <span>عرض كود ربط RCON + Pterodactyl API + الشات العربي</span>
+            <div class="flex items-center gap-3">
+                <button onclick="window.openBridgeCodeModal()" class="text-purple-300 hover:text-white underline underline-offset-4 flex items-center gap-1.5 font-bold">
+                    <i class="fa-solid fa-code"></i>
+                    <span>عرض كود جسر الـ RCON والبانل (Node.js)</span>
                 </button>
             </div>
         </div>
     </footer>
 
-    <!-- ========================================== -->
-    <!-- MODAL 1: PLAYER INSPECTION & PRIVATE MSG   -->
-    <!-- ========================================== -->
-    <div id="playerInspectModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-mc-card border border-purple-500/40 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
-            <div class="px-5 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="font-extrabold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-id-card text-purple-400"></i>
-                    <span>بطاقة اللاعب المتصل</span>
-                </h3>
-                <button onclick="closePlayerInspectModal()" class="text-slate-400 hover:text-white">
+    <!-- ================================================================= -->
+    <!-- REAL LOGIN / REGISTER / GUEST MODAL                               -->
+    <!-- ================================================================= -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="glass-card rounded-3xl max-w-md w-full p-6 border border-purple-500/40 shadow-2xl space-y-5 relative">
+            
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black font-display text-white text-base">تسجيل الدخول في بوابة ZeroSMP</h3>
+                        <p class="text-[11px] text-slate-400">ادخل بحسابك المحمي بكلمة مرور أو ادخل كضيف سريع</p>
+                    </div>
+                </div>
+                <button onclick="window.closeAuthModal()" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-5 space-y-4">
-                <div class="flex items-center gap-4">
-                    <img id="inspectAvatar" src="" alt="Skin" class="w-16 h-16 rounded-2xl border-2 border-purple-500 bg-slate-900">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h4 id="inspectName" class="text-lg font-black text-white font-mono"></h4>
-                            <span id="inspectRank" class="text-[11px] px-2 py-0.5 rounded font-bold"></span>
-                        </div>
-                        <p id="inspectWorld" class="text-xs text-slate-400 mt-1"></p>
-                        <p id="inspectPing" class="text-xs font-mono text-emerald-400 mt-0.5"></p>
-                    </div>
+
+            <!-- Mode Tabs -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 text-xs font-extrabold">
+                <button type="button" onclick="window.switchAuthTab('ACCOUNT')" id="tabAccountBtn" class="py-2 rounded-xl bg-purple-600 text-white transition">
+                    <i class="fa-solid fa-lock ml-1"></i> دخول / تسجيل حساب
+                </button>
+                <button type="button" onclick="window.switchAuthTab('GUEST')" id="tabGuestBtn" class="py-2 rounded-xl text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-bolt ml-1"></i> دخول كضيف سريع
+                </button>
+            </div>
+
+            <!-- TAB 1: REAL PASSWORD-PROTECTED ACCOUNT FORM -->
+            <form id="accountAuthForm" onsubmit="window.handleAccountAuth(event)" class="space-y-3.5">
+                <div class="p-3 rounded-2xl bg-purple-950/30 border border-purple-500/30 text-[11px] text-purple-200 leading-relaxed">
+                    إذا كان الحساب جديداً سيتم إنشاؤه وحفظه باسمك في قاعدة البيانات تلقائياً، وإذا كان مسجلاً مسبقاً سيتم التحقق من كلمة المرور الخاصة بك.
                 </div>
 
-                <div class="pt-3 border-t border-slate-800 space-y-2 text-xs">
-                    <label class="block text-slate-300 font-bold">إرسال همسة خاصة (Private Whisper `/msg`) داخل اللعبة:</label>
-                    <div class="flex items-center gap-2">
-                        <input id="whisperInput" type="text" placeholder="اكتب رسالتك الخاصة لهذا اللاعب..." 
-                            class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-purple-500">
-                        <button onclick="sendPrivateWhisper()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition">
-                            إرسال
-                        </button>
-                    </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">اسم اللاعب في ماينكرافت (Username)</label>
+                    <input id="authAccountUsername" type="text" dir="ltr" required minlength="3" maxlength="20" placeholder="مثال: Notch أو اسمك باللعبة"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-sm font-mono text-white focus:outline-none">
                 </div>
-            </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور الخاصة بحسابك في الموقع</label>
+                    <input id="authAccountPassword" type="password" dir="ltr" required minlength="4" placeholder="••••••••"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-sm font-mono text-white focus:outline-none">
+                </div>
+
+                <button id="accountSubmitBtn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-black text-sm shadow-lg shadow-purple-600/30 transition">
+                    تسجيل الدخول / إنشاء الحساب
+                </button>
+            </form>
+
+            <!-- TAB 2: QUICK GUEST LOGIN FORM -->
+            <form id="guestAuthForm" onsubmit="window.handleGuestAuth(event)" class="hidden space-y-4">
+                <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 leading-relaxed">
+                    يمكنك المشاركة في الشات فوراً كضيف بدون كلمة مرور، وستظهر بجانب اسمك شارة <span class="text-purple-300 font-bold">[ضيف]</span>.
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">الاسم المستعار للضيف (اختياري)</label>
+                    <input id="authGuestName" type="text" maxlength="18" placeholder="اتركه فارغاً لتوليد اسم ضيف تلقائي"
+                        class="w-full bg-slate-950 border border-slate-700 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-purple-600 text-white font-black text-sm border border-purple-500/40 transition">
+                    دخول فوري كضيف
+                </button>
+            </form>
+
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MODAL 2: CHANGE ADMIN USERNAME & PASSWORD  -->
-    <!-- ========================================== -->
-    <div id="adminCredsModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-mc-card border border-purple-500/40 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
-            <div class="px-5 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <h3 class="font-extrabold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-user-lock text-amber-400"></i>
-                    <span>تغيير بيانات دخول الأدمن</span>
-                </h3>
-                <button onclick="closeAdminCredentialsModal()" class="text-slate-400 hover:text-white">
+    <!-- ================================================================= -->
+    <!-- NODE.JS REAL RCON & PTERODACTYL BRIDGE MODAL                      -->
+    <!-- ================================================================= -->
+    <div id="bridgeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="glass-card rounded-3xl max-w-2xl w-full p-6 border border-purple-500/40 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-black font-display text-white text-base">كود الجسر الحقيقي (server.js) لربط RCON والبانل</h3>
+                <button onclick="window.closeBridgeCodeModal()" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-5 space-y-4 text-xs">
-                <div>
-                    <label class="block text-slate-300 font-bold mb-1">اسم المستخدم الجديد (Admin Username):</label>
-                    <input id="newAdminUser" type="text" dir="ltr" value="admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white font-mono">
-                </div>
-                <div>
-                    <label class="block text-slate-300 font-bold mb-1">كلمة المرور الجديدة (Admin Password):</label>
-                    <input id="newAdminPass" type="text" dir="ltr" value="ZeroSMP#2026" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-amber-400 font-mono">
-                </div>
-                <button onclick="saveNewAdminCredentials()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold transition">
-                    حفظ بيانات الدخول الجديدة
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 3: NODE.JS BRIDGE CODE (RCON + API)  -->
-    <!-- ========================================== -->
-    <div id="bridgeCodeModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-mc-card border border-slate-700 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <div class="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 text-lg">
-                        <i class="fa-solid fa-server"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-white">كود الجسر الكامل (server.js) لربط RCON + الشات العربي + Pterodactyl API</h3>
-                        <p class="text-xs text-slate-400">انسخ هذا الكود وشغّله على Node.js أو استضافة Render ليربط لوحة تحكم موقعك بالسيرفر والاستضافة مباشرة</p>
-                    </div>
-                </div>
-                <button onclick="closeBridgeCodeModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-rose-500/20 hover:text-rose-400 text-slate-400 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="p-6 overflow-y-auto space-y-4 text-xs leading-relaxed">
-                <div class="flex items-center justify-between">
-                    <span class="text-purple-300 font-bold">التثبيت: <code class="text-emerald-400 font-mono">npm install express cors rcon-client axios</code></span>
-                    <button onclick="copyElementText('fullNodeBridgeCode')" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center gap-1.5">
-                        <i class="fa-regular fa-copy"></i> نسخ الكود الكامل
-                    </button>
-                </div>
-
-              
-              <pre id="fullNodeBridgeCode" dir="ltr" class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-cyan-300 overflow-x-auto">const express = require('express');
+            <p class="text-xs text-slate-300 leading-relaxed">
+                شغّل هذا الكود بجانب بوت الديسكورد الخاص بك (`npm i express cors rcon-client axios`) ثم ضع رابطه في `SERVER_CONFIG.rcon.bridgeUrl` أعلى كود الموقع ليعمل الـ RCON والتحكم بالبانل وجلب الرام والتخزين الحقيقي بدون حظر CORS:
+            </p>
+            <pre id="bridgeCodePre" dir="ltr" class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-[11px] font-mono text-purple-200 overflow-x-auto flex-1 select-all">const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const { Rcon } = require('rcon-client');
+const axios = require('axios');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. إرسال رسائل الشات العربي أو أوامر الأدمن عبر RCON
+// 1. إرسال أوامر RCON والرسائل العربية إلى سيرفر ماينكرافت
 app.post('/api/rcon', async (req, res) => {
-    const { host, port, password, command } = req.body;
-    try {
-        const rcon = await Rcon.connect({ host, port: parseInt(port), password });
-        const response = await rcon.send(command);
-        await rcon.end();
-        res.json({ success: true, response });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
+  const { host, port, password, command } = req.body;
+  try {
+    const rcon = await Rcon.connect({ host, port: Number(port), password });
+    const response = await rcon.send(command);
+    await rcon.end();
+    res.json({ success: true, response });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// 2. التحكم بالاستضافة (تشغيل / إيقاف / ريستارت) عبر Pterodactyl API Key
+// 2. جلب استهلاك الرام والتخزين والمعالج الحقيقي من Pterodactyl
+app.post('/api/resources', async (req, res) => {
+  const { panelUrl, serverId, apiKey } = req.body;
+  try {
+    const base = panelUrl.replace(/\/$/, '');
+    const headers = { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'Application/vnd.pterodactyl.v1+json' };
+    const [resUsage, resDetails] = await Promise.all([
+      axios.get(`${base}/api/client/servers/${serverId}/resources`, { headers }),
+      axios.get(`${base}/api/client/servers/${serverId}`, { headers })
+    ]);
+    res.json({
+      success: true,
+      resources: resUsage.data.attributes,
+      limits: resDetails.data.attributes.limits
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 3. إرسال أوامر الطاقة (start / stop / restart / kill) للبانل
 app.post('/api/power', async (req, res) => {
-    const { panelUrl, serverId, apiKey, signal } = req.body; // signal: start | stop | restart | kill
-    try {
-        await axios.post(`${panelUrl}/api/client/servers/${serverId}/power`, 
-            { signal },
-            { headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' } }
-        );
-        res.json({ success: true, message: `Power signal ${signal} sent!` });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
+  const { panelUrl, serverId, apiKey, signal } = req.body;
+  try {
+    const base = panelUrl.replace(/\/$/, '');
+    await axios.post(`${base}/api/client/servers/${serverId}/power`, { signal }, {
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'Application/vnd.pterodactyl.v1+json' }
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-app.listen(3000, () => console.log('ZeroSMP Full Admin & Chat Bridge running on port 3000'));</pre>
-            </div>
+app.listen(process.env.PORT || 3000, () => console.log('ZeroSMP Bridge Ready'));</pre>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- APPLICATION JAVASCRIPT LOGIC               -->
-    <!-- ========================================== -->
-    <script>
-        // --- ADMIN AUTH & CONFIG STATE ---
-        let adminUser = localStorage.getItem('zero_admin_user') || 'admin';
-        let adminPass = localStorage.getItem('zero_admin_pass') || 'ZeroSMP#2026';
-        let isAdminLoggedIn = false;
+    <!-- ================================================================= -->
+    <!-- MAIN JAVASCRIPT & FIREBASE REAL-TIME LOGIC                        -->
+    <!-- ================================================================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, addDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let currentPlayer = "player";
-        let inspectedPlayerName = "playersmp";
+        // =====================================================================
+        // 1. إعدادات السيرفر والبانل والـ RCON من الكود مباشرة (SERVER_CONFIG)
+        // عدّل القيم هنا فقط من الكود بدون الحاجة لأي لوحة أدمن في الموقع!
+        // =====================================================================
+        const SERVER_CONFIG = {
+            serverName: "ZeroSMP",
+            serverIp: "play.rioo.my",      // أيبي السيرفر الرسمي الذي يفحصه الموقع مباشرة
+            customLogoUrl: "",             // اختياري: رابط صورة الشعار إذا أردت استبدال شعار ZeroSMP المدمج
 
-        // Online Players Data
-        let onlinePlayers = [
-            { name: "iicaan_Owner", rank: "OWNER", rankColor: "bg-purple-500/20 text-purple-300 border-purple-500/40", world: "العالم العادي (Overworld)", ping: 24 },
-            { name: "Fury", rank: "ADMIN", rankColor: "bg-rose-500/20 text-rose-300 border-rose-500/40", world: "السباون (Spawn)", ping: 31 },
-            { name: "Rio", rank: "ZERO+", rankColor: "bg-amber-500/20 text-amber-300 border-amber-500/40", world: "عالم النيذر (Nether)", ping: 42 },
-            { name: "leader", rank: "VIP", rankColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40", world: "العالم العادي (Overworld)", ping: 38 },
-            { name: "toji", rank: "MEMBER", rankColor: "bg-slate-800 text-slate-300 border-slate-700", world: "عالم الإند (The End)", ping: 51 },
-            { name: "Sajad_Pro", rank: "VIP", rankColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40", world: "العالم العادي (Overworld)", ping: 29 },
-            { name: "Sezer", rank: "MEMBER", rankColor: "bg-slate-800 text-slate-300 border-slate-700", world: "الكهوف العميقة (Deep Dark)", ping: 47 },
-            { name: "Jacks", rank: "ZERO+", rankColor: "bg-amber-500/20 text-amber-300 border-amber-500/40", world: "السباون (Spawn)", ping: 35 }
-        ];
+            // إعدادات لوحة استضافة Pterodactyl لجلب الرام والتخزين الحقيقي والتحكم بالسيرفر
+            pterodactyl: {
+                panelUrl: "https://panel.partner-hosting.com/", // ضع رابط لوحة الاستضافة هنا
+                serverId: "32b0d6c6-a599-486e-99c3-eec98782b792",            // ضع معرف السيرفر (مثلاً a1b2c3d4)
+                apiKey: "ptlc_6p69PtfQj5KYweVFipaK2imbkLKTZbZNAX7bmlT4zIM",           // ضع مفتاح Client API Key من حسابك بالبانل
+                corsProxy: "https://corsproxy.io/?",   // بروكسي لتجاوز حظر المتصفح عند الاتصال المباشر بالبانل
+  
+                // القيم الحقيقية لخطة خادمك (تظهر في حال لم تضع API Key بعد أو كحد أقصى للرام والتخزين)
+                configuredMaxRamGb: 12,                // إجمالي رام السيرفر بالجيجابايت
+                configuredMaxStorageGb: 100,           // إجمالي وحدة التخزين بالجيجابايت
+                cpuModelName: "AMD Ryzen 9 / NVMe"     // اسم معالج السيرفر
+            },
 
-        // Live Bidirectional Chat History (Supports full Arabic)
-        let chatMessages = [
-            { source: "SERVER", sender: "ZeroSMP", rank: "SYSTEM", text: "مرحباً بكم في الشات المشترك لسيرفر ZeroSMP! جميع الرسائل هنا متصلة مباشرة مع السيرفر.", time: "20:40" },
-            { source: "GAME", sender: "iicaan_Owner", rank: "OWNER", text: "يروحا؟", time: "20:41" },
-            { source: "GAME", sender: "MustafaCraft", rank: "ZERO+", text: "توجي جيب لوتي يله", time: "20:42" },
-            { source: "WEB", sender: "67", rank: "WEB", text: " لعبه زربه بوبجي ", time: "20:43" },
-            { source: "GAME", sender: "67", rank: "VIP", text: "هلو يروحا سكسفن", time: "20:44" }
-        ];
+            // إعدادات الـ RCON والجسر لإرسال رسائل الشات والأوامر إلى داخل ماينكرافت
+            rcon: {
+                bridgeUrl: "",                         // ضع رابط جسر Node.js هنا (مثلاً https://your-bridge.onrender.com)
+                host: "95.156.225.24",                  // هوست أو أيبي الـ RCON
+                port: 28727,                           // بورت الـ RCON الذي فتحته في الاستضافة
+                password: "leader7368"         // باسورد الـ RCON من ملف server.properties
+            },
 
-        // Sample Arabic messages for simulation
-        const sampleArabicGameMsgs = [
-            { sender: "Sajad_Pro", rank: "VIP", text: "شباب منو عنده إيميرالد يبدل وياي بدايموند؟ 💎" },
-            { sender: "Hussein_MC", rank: "MEMBER", text: "لكيت قلعة النيذر! الإحداثيات يم البوابة الثانية 🔥" },
-            { sender: "Noor_Gamer", rank: "ZERO+", text: "ما شاء الله البناء بالسباون الجديد كلش فخم 💜" },
-            { sender: "MustafaCraft", rank: "ZERO+", text: "منو يجي نقتله للتنين بعالم الإند؟ 🐉" }
-        ];
-
-        // --- INITIALIZATION ---
-        window.onload = function () {
-            loadSavedAdminConfig();
-            updatePlayerProfile();
-            renderOnlinePlayers();
-            renderChatMessages();
-            updateAdminCredentialsHints();
+            // أسماء الحسابات التي تحصل على رتبة [إدارة] ويظهر لها شريط تشغيل/إيقاف السيرفر والـ RCON
+            adminUsernames: ["admin", "leader", "l3"],
+            showControlBarForEveryone: false           // اجعلها true إذا أردت إظهار شريط التحكم بدون اشتراط اسم الأدمن
         };
 
-        // --- TAB SWITCHING ---
-        function switchMainTab(tab) {
-            const publicView = document.getElementById('publicPortalView');
-            const adminView = document.getElementById('adminPanelView');
-            const btnPublic = document.getElementById('navBtnPublic');
-            const btnAdmin = document.getElementById('navBtnAdmin');
+        // =====================================================================
+        // 2. تهيئة قاعدة البيانات السحابية الحقيقية (Firebase Firestore)
+        // =====================================================================
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'zerosmp-live-portal';
+        let db = null;
+        let auth = null;
+        let currentFirebaseUser = null;
 
-            if (tab === 'public') {
-                publicView.classList.remove('hidden');
-                adminView.classList.add('hidden');
-                btnPublic.className = "px-3.5 py-1.5 rounded-lg bg-purple-600 text-white shadow-md shadow-purple-600/30 flex items-center gap-1.5 transition";
-                btnAdmin.className = "px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white flex items-center gap-1.5 transition";
+        // حالة المستخدم الحالي (حساب مسجل أو ضيف)
+        let currentUserSession = {
+            username: "ضيف_" + Math.floor(1000 + Math.random() * 9000),
+            isGuest: true,
+            role: "ضيف"
+        };
+
+        // حفظ واسترجاع الجلسة من المتصفح
+        const savedSession = localStorage.getItem("zerosmp_user_session_v2");
+        if (savedSession) {
+            try {
+                currentUserSession = JSON.parse(savedSession);
+            } catch (e) {}
+        }
+
+        let liveChatMessages = [];
+        let liveMinecraftPlayers = [];
+        let soundEnabled = true;
+        let initialChatLoadDone = false;
+
+        // تطبيق إعدادات SERVER_CONFIG على عناصر الواجهة
+        function applyStaticConfigToUI() {
+            document.getElementById("headerServerTitle").textContent = SERVER_CONFIG.serverName;
+            document.getElementById("topServerIpText").textContent = SERVER_CONFIG.serverIp;
+            document.getElementById("headerIpBadge").textContent = SERVER_CONFIG.serverIp;
+            document.getElementById("heroServerIp").textContent = SERVER_CONFIG.serverIp;
+            document.getElementById("specHostValue").textContent = SERVER_CONFIG.serverIp;
+            document.getElementById("specCpuValue").textContent = SERVER_CONFIG.pterodactyl.cpuModelName;
+
+            if (SERVER_CONFIG.customLogoUrl) {
+                const img = document.getElementById("configCustomLogo");
+                img.src = SERVER_CONFIG.customLogoUrl;
+                img.classList.remove("hidden");
+                document.getElementById("defaultZeroSvg").classList.add("hidden");
+            }
+
+            updateUserHeaderWidget();
+        }
+
+        // تحديث بيانات المستخدم في الهيدر وشريط التحكم
+        function updateUserHeaderWidget() {
+            const isOwnerAdmin = !currentUserSession.isGuest && SERVER_CONFIG.adminUsernames.some(
+                adminName => adminName.toLowerCase() === currentUserSession.username.toLowerCase()
+            );
+
+            if (isOwnerAdmin) {
+                currentUserSession.role = "إدارة";
+            } else if (!currentUserSession.isGuest) {
+                currentUserSession.role = "لاعب موثق";
             } else {
-                publicView.classList.add('hidden');
-                adminView.classList.remove('hidden');
-                btnAdmin.className = "px-3.5 py-1.5 rounded-lg bg-purple-600 text-white shadow-md shadow-purple-600/30 flex items-center gap-1.5 transition";
-                btnPublic.className = "px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white flex items-center gap-1.5 transition";
+                currentUserSession.role = "ضيف";
+            }
+
+            const avatarSkin = currentUserSession.isGuest ? "MHF_Steve" : currentUserSession.username;
+            const avatarUrl = `https://mc-heads.net/avatar/${encodeURIComponent(avatarSkin)}/64`;
+
+            document.getElementById("currentUserAvatar").src = avatarUrl;
+            document.getElementById("chatInputAvatar").src = avatarUrl;
+            document.getElementById("currentUserName").textContent = currentUserSession.username;
+
+            const badgeEl = document.getElementById("currentUserBadge");
+            badgeEl.textContent = currentUserSession.role;
+
+            if (currentUserSession.role === "إدارة") {
+                badgeEl.className = "text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40";
+                document.getElementById("currentUserStatusText").textContent = "حساب إدارة موثق";
+            } else if (!currentUserSession.isGuest) {
+                badgeEl.className = "text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+                document.getElementById("currentUserStatusText").textContent = "حساب ماينكرافت مسجل";
+            } else {
+                badgeEl.className = "text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700";
+                document.getElementById("currentUserStatusText").textContent = "متصل كضيف (اضغط لتسجيل حساب)";
+            }
+
+            // إظهار شريط التحكم بالاستضافة والـ RCON إذا كان المستخدم أدمن أو مفعل من الكود
+            const controlBar = document.getElementById("codeConfiguredControlBar");
+            if (isOwnerAdmin || SERVER_CONFIG.showControlBarForEveryone) {
+                controlBar.classList.remove("hidden");
+            } else {
+                controlBar.classList.add("hidden");
             }
         }
 
-        // --- LOGO & PROFILE ---
-        function handleCustomLogoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('customLogoImg');
-                const svg = document.getElementById('defaultZeroSvg');
-                img.src = e.target.result;
-                img.classList.remove('hidden');
-                svg.classList.add('hidden');
-                showToast("تم رفع شعار ZeroSMP المخصص بنجاح!", "emerald");
-            };
-            reader.readAsDataURL(file);
-        }
+        // =====================================================================
+        // 3. فحص حالة سيرفر ماينكرافت الحقيقي (play.rioo.my) بدون أي بيانات وهمية
+        // =====================================================================
+        async function fetchRealMinecraftStatus() {
+            const ip = SERVER_CONFIG.serverIp;
+            let data = null;
 
-        function updatePlayerProfile() {
-            const input = document.getElementById('mcUsernameInput').value.trim() || "Steve";
-            currentPlayer = input;
-            document.getElementById('playerAvatar').src = `https://mc-heads.net/avatar/${encodeURIComponent(currentPlayer)}/64`;
-        }
-
-        function copyServerIp() {
-            const ip = document.getElementById('displayServerIp').innerText;
-            const textarea = document.createElement('textarea');
-            textarea.value = ip;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showToast(`تم نسخ أيبي السيرفر (${ip}) بنجاح!`, "purple");
-        }
-
-        // --- ONLINE PLAYERS LIST ---
-        function renderOnlinePlayers() {
-            const listEl = document.getElementById('onlinePlayersList');
-            const modSelect = document.getElementById('modTargetPlayer');
-            const query = (document.getElementById('playerSearchInput')?.value || "").toLowerCase();
-
-            const filtered = onlinePlayers.filter(p => p.name.toLowerCase().includes(query));
-
-            document.getElementById('topOnlineCount').innerText = `${onlinePlayers.length} / 100`;
-            document.getElementById('statOnlinePlayers').innerText = `${onlinePlayers.length} / 100`;
-
-            listEl.innerHTML = filtered.map(p => `
-                <div onclick="openPlayerInspect('${p.name}')" class="cursor-pointer bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800 hover:border-purple-500/40 rounded-xl p-2.5 flex items-center justify-between transition">
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <img src="https://mc-heads.net/avatar/${p.name}/48" alt="${p.name}" class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-900 absolute -bottom-0.5 -left-0.5"></span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-mono font-bold text-sm text-white">${p.name}</span>
-                                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded border ${p.rankColor}">${p.rank}</span>
-                            </div>
-                            <div class="text-[11px] text-slate-400">${p.world}</div>
-                        </div>
-                    </div>
-                    <div class="text-left font-mono text-xs text-emerald-400 flex items-center gap-1">
-                        <i class="fa-solid fa-signal text-[10px]"></i>
-                        <span>${p.ping}ms</span>
-                    </div>
-                </div>
-            `).join('');
-
-            if (modSelect) {
-                modSelect.innerHTML = onlinePlayers.map(p => `<option value="${p.name}">${p.name} (${p.rank} - ${p.world})</option>`).join('');
-            }
-        }
-
-        function refreshOnlinePlayers() {
-            onlinePlayers.forEach(p => {
-                p.ping = Math.max(18, Math.min(95, p.ping + Math.floor(Math.random() * 11 - 5)));
-            });
-            renderOnlinePlayers();
-            showToast("تم تحديث قائمة اللاعبين المتصلين والـ Ping من السيرفر!", "emerald");
-        }
-
-        function openPlayerInspect(name) {
-            const p = onlinePlayers.find(x => x.name === name);
-            if (!p) return;
-            inspectedPlayerName = p.name;
-            document.getElementById('inspectAvatar').src = `https://mc-heads.net/avatar/${p.name}/64`;
-            document.getElementById('inspectName').innerText = p.name;
-            const rankEl = document.getElementById('inspectRank');
-            rankEl.innerText = p.rank;
-            rankEl.className = `text-[11px] px-2 py-0.5 rounded border font-bold ${p.rankColor}`;
-            document.getElementById('inspectWorld').innerText = `العالم الحالي: ${p.world}`;
-            document.getElementById('inspectPing').innerText = `سرعة الاتصال (Ping): ${p.ping} ms`;
-            document.getElementById('playerInspectModal').classList.remove('hidden');
-        }
-
-        function closePlayerInspectModal() {
-            document.getElementById('playerInspectModal').classList.add('hidden');
-        }
-
-        function sendPrivateWhisper() {
-            const input = document.getElementById('whisperInput');
-            const msg = input.value.trim();
-            if (!msg) return;
-            const rconCmd = `tellraw ${inspectedPlayerName} {"text":"[همسة من الموقع - ${currentPlayer}]: ${msg}","color":"light_purple"}`;
-            dispatchRconCommand(rconCmd);
-            input.value = "";
-            closePlayerInspectModal();
-            showToast(`تم إرسال همستك الخاصة إلى ${inspectedPlayerName} داخل اللعبة!`, "purple");
-        }
-
-        // --- LIVE BIDIRECTIONAL ARABIC CHAT (GAME <-> WEB) ---
-        function renderChatMessages() {
-            const feed = document.getElementById('liveChatFeed');
-            feed.innerHTML = chatMessages.map(m => {
-                const isWeb = m.source === 'WEB';
-                const isSystem = m.source === 'SERVER';
-
-                if (isSystem) {
-                    return `
-                        <div class="bg-purple-950/40 border border-purple-500/30 rounded-xl p-2.5 text-xs text-purple-200 flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-amber-400"></i>
-                            <span>${m.text}</span>
-                        </div>
-                    `;
+            try {
+                // المحاولة الأولى عبر mcstatus.io الحقيقي
+                const res = await fetch(`https://api.mcstatus.io/v2/status/java/${encodeURIComponent(ip)}`);
+                if (res.ok) {
+                    const json = await res.json();
+                    data = {
+                        online: Boolean(json.online),
+                        playersOnline: json.players?.online ?? 0,
+                        playersMax: json.players?.max ?? 0,
+                        playerList: (json.players?.list || []).map(p => p.name_clean || p.name_raw || "Player"),
+                        version: json.version?.name_clean || json.version?.name_raw || "Java Edition",
+                        motd: json.motd?.clean || ""
+                    };
                 }
+            } catch (e) {}
 
-                const badgeClass = isWeb 
-                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' 
-                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
-                const badgeLabel = isWeb ? '🌐 من الموقع' : '🎮 داخل اللعبة';
-
-                return `
-                    <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-3 flex items-start gap-3">
-                        <img src="https://mc-heads.net/avatar/${encodeURIComponent(m.sender)}/40" class="w-9 h-9 rounded-lg border border-slate-700 bg-slate-950 mt-0.5" alt="${m.sender}">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">${badgeLabel}</span>
-                                    <span class="font-mono font-extrabold text-xs text-white">${m.sender}</span>
-                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">${m.rank}</span>
-                                </div>
-                                <span class="text-[10px] font-mono text-slate-500">${m.time}</span>
-                            </div>
-                            <p dir="auto" class="text-xs sm:text-sm text-slate-200 break-words leading-relaxed">${m.text}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            feed.scrollTop = feed.scrollHeight;
-        }
-
-        function insertQuickChat(text) {
-            const input = document.getElementById('webChatInput');
-            input.value = text;
-            input.focus();
-        }
-
-        function sendWebChatMessage(event) {
-            event.preventDefault();
-            const input = document.getElementById('webChatInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            chatMessages.push({
-                source: 'WEB',
-                sender: currentPlayer,
-                rank: isAdminLoggedIn ? 'ADMIN' : 'WEB',
-                text: text,
-                time: now
-            });
-            renderChatMessages();
-            input.value = "";
-
-            // Build exact Minecraft Java tellraw command supporting UTF-8 Arabic
-            const tellrawJson = JSON.stringify([
-                { text: "[شات الموقع] ", color: "dark_purple", bold: true },
-                { text: `<${currentPlayer}> `, color: "light_purple" },
-                { text: text, color: "white" }
-            ]);
-            const rconCmd = `tellraw @a ${tellrawJson}`;
-            dispatchRconCommand(rconCmd);
-        }
-
-        function simulateIncomingGameChat() {
-            const pick = sampleArabicGameMsgs[Math.floor(Math.random() * sampleArabicGameMsgs.length)];
-            const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            chatMessages.push({
-                source: 'GAME',
-                sender: pick.sender,
-                rank: pick.rank,
-                text: pick.text,
-                time: now
-            });
-            renderChatMessages();
-            logRcon(`[Chat-Sync]: <${pick.sender}> ${pick.text}`, "text-emerald-400");
-        }
-
-        // --- ADMIN AUTHENTICATION ---
-        function updateAdminCredentialsHints() {
-            document.getElementById('hintAdminUser').innerText = adminUser;
-            document.getElementById('hintAdminPass').innerText = adminPass;
-            document.getElementById('newAdminUser').value = adminUser;
-            document.getElementById('newAdminPass').value = adminPass;
-        }
-
-        function autoFillAdminLogin() {
-            document.getElementById('adminUserInput').value = adminUser;
-            document.getElementById('adminPassInput').value = adminPass;
-            showToast("تم تعبئة يوزر وباسورد الأدمن تلقائياً!", "purple");
-        }
-
-        function handleAdminLogin(event) {
-            event.preventDefault();
-            const u = document.getElementById('adminUserInput').value.trim();
-            const p = document.getElementById('adminPassInput').value.trim();
-
-            if (u === adminUser && p === adminPass) {
-                isAdminLoggedIn = true;
-                document.getElementById('adminLoginGate').classList.add('hidden');
-                document.getElementById('adminDashboardContent').classList.remove('hidden');
-                document.getElementById('adminUnlockedBadge').classList.remove('hidden');
-                showToast("مرحباً بك في لوحة تحكم إدارة ZeroSMP الكاملة!", "emerald");
-                logRcon(`[Security]: Admin "${u}" logged into ZeroSMP Control Panel.`, "text-purple-400");
-            } else {
-                showToast("خطأ في اسم المستخدم أو كلمة المرور! اضغط على زر التعبئة التلقائية.", "rose");
-            }
-        }
-
-        function logoutAdmin() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminDashboardContent').classList.add('hidden');
-            document.getElementById('adminLoginGate').classList.remove('hidden');
-            document.getElementById('adminUnlockedBadge').classList.add('hidden');
-            showToast("تم تسجيل الخروج من لوحة الإدارة.", "amber");
-        }
-
-        function openAdminCredentialsModal() {
-            document.getElementById('adminCredsModal').classList.remove('hidden');
-        }
-        function closeAdminCredentialsModal() {
-            document.getElementById('adminCredsModal').classList.add('hidden');
-        }
-
-        function saveNewAdminCredentials() {
-            const newU = document.getElementById('newAdminUser').value.trim();
-            const newP = document.getElementById('newAdminPass').value.trim();
-            if (!newU || !newP) return;
-            adminUser = newU;
-            adminPass = newP;
-            localStorage.setItem('zero_admin_user', adminUser);
-            localStorage.setItem('zero_admin_pass', adminPass);
-            updateAdminCredentialsHints();
-            closeAdminCredentialsModal();
-            showToast("تم تحديث يوزر وباسورد الأدمن وحفظهما بنجاح!", "emerald");
-        }
-
-        // --- ADMIN RCON & HOSTING API CONFIGURATION ---
-        function loadSavedAdminConfig() {
-            if (localStorage.getItem('zero_rcon_host')) {
-                document.getElementById('cfgRconHost').value = localStorage.getItem('zero_rcon_host');
-                document.getElementById('displayServerIp').innerText = localStorage.getItem('zero_rcon_host');
-            }
-            if (localStorage.getItem('zero_rcon_port')) document.getElementById('cfgRconPort').value = localStorage.getItem('zero_rcon_port');
-            if (localStorage.getItem('zero_rcon_pass')) document.getElementById('cfgRconPass').value = localStorage.getItem('zero_rcon_pass');
-            if (localStorage.getItem('zero_bridge_url')) document.getElementById('cfgBridgeUrl').value = localStorage.getItem('zero_bridge_url');
-            if (localStorage.getItem('zero_panel_url')) document.getElementById('cfgPanelUrl').value = localStorage.getItem('zero_panel_url');
-            if (localStorage.getItem('zero_server_id')) document.getElementById('cfgServerId').value = localStorage.getItem('zero_server_id');
-            if (localStorage.getItem('zero_api_key')) document.getElementById('cfgApiKey').value = localStorage.getItem('zero_api_key');
-        }
-
-        function saveAllAdminConfig() {
-            const host = document.getElementById('cfgRconHost').value.trim();
-            const port = document.getElementById('cfgRconPort').value.trim();
-            const pass = document.getElementById('cfgRconPass').value;
-            const bridge = document.getElementById('cfgBridgeUrl').value.trim();
-            const panel = document.getElementById('cfgPanelUrl').value.trim();
-            const serverId = document.getElementById('cfgServerId').value.trim();
-            const apiKey = document.getElementById('cfgApiKey').value.trim();
-
-            localStorage.setItem('zero_rcon_host', host);
-            localStorage.setItem('zero_rcon_port', port);
-            localStorage.setItem('zero_rcon_pass', pass);
-            localStorage.setItem('zero_bridge_url', bridge);
-            localStorage.setItem('zero_panel_url', panel);
-            localStorage.setItem('zero_server_id', serverId);
-            localStorage.setItem('zero_api_key', apiKey);
-
-            document.getElementById('displayServerIp').innerText = host;
-            logRcon(`[Config]: Updated RCON (${host}:${port}) & Hosting API Key for Server #${serverId}.`, "text-emerald-400");
-            showToast("تم حفظ إعدادات الـ RCON ومفتاح الـ API Key في اللوحة بنجاح!", "emerald");
-        }
-
-        function toggleInputVisibility(id) {
-            const el = document.getElementById(id);
-            el.type = el.type === 'password' ? 'text' : 'password';
-        }
-
-        function testRconConnection() {
-            const host = document.getElementById('cfgRconHost').value;
-            const port = document.getElementById('cfgRconPort').value;
-            logRcon(`[RCON-Test]: Pinging ${host}:${port} with RCON credentials...`, "text-purple-400");
-            setTimeout(() => {
-                logRcon(`[RCON-Test]: Handshake OK! Server responded (Paper 1.20.4 - 20.0 TPS).`, "text-emerald-400");
-                showToast(`اتصال الـ RCON مع ${host}:${port} يعمل بنجاح!`, "emerald");
-            }, 400);
-        }
-
-        function testHostingApi() {
-            const panel = document.getElementById('cfgPanelUrl').value;
-            const srv = document.getElementById('cfgServerId').value;
-            logRcon(`[API-Test]: Authenticating API Key against ${panel}/api/client/servers/${srv}...`, "text-amber-400");
-            setTimeout(() => {
-                logRcon(`[API-Test]: 200 OK — Pterodactyl API Key verified! Hardware controls active.`, "text-emerald-400");
-                showToast("تم التحقق من مفتاح الاستضافة (API Key) بنجاح!", "emerald");
-            }, 400);
-        }
-
-        // --- HOSTING POWER & SERVER CONTROLS ---
-        async function sendHostPowerSignal(signal) {
-            const panelUrl = document.getElementById('cfgPanelUrl').value.trim();
-            const serverId = document.getElementById('cfgServerId').value.trim();
-            const apiKey = document.getElementById('cfgApiKey').value.trim();
-            const bridgeUrl = document.getElementById('cfgBridgeUrl').value.trim();
-
-            const stateLabel = document.getElementById('powerStateLabel');
-            const topBadge = document.getElementById('topServerStatusBadge');
-
-            if (signal === 'start') {
-                stateLabel.innerText = "RUNNING";
-                stateLabel.className = "px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold";
-                topBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> حالة السيرفر: متصل (Online)`;
-                topBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold";
-                document.getElementById('cpuValText').innerText = "36%";
-                document.getElementById('cpuBar').style.width = "36%";
-            } else if (signal === 'restart') {
-                stateLabel.innerText = "RESTARTING...";
-                stateLabel.className = "px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30 text-xs font-mono font-bold";
-                setTimeout(() => sendHostPowerSignal('start'), 2500);
-            } else {
-                stateLabel.innerText = "OFFLINE";
-                stateLabel.className = "px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-400 border border-rose-500/30 text-xs font-mono font-bold";
-                topBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> حالة السيرفر: متوقف (Offline)`;
-                topBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold";
-                document.getElementById('cpuValText').innerText = "0%";
-                document.getElementById('cpuBar').style.width = "0%";
-            }
-
-            logRcon(`> [Hosting API]: POST ${panelUrl}/api/client/servers/${serverId}/power { signal: "${signal}" }`, "text-amber-400");
-            showToast(`تم إرسال إشارة (${signal.toUpperCase()}) إلى الاستضافة عبر الـ API Key!`, "amber");
-
-            if (bridgeUrl) {
+            // المحاولة الاحتياطية عبر mcsrvstat.us الحقيقي
+            if (!data) {
                 try {
-                    await fetch(`${bridgeUrl}/api/power`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ panelUrl, serverId, apiKey, signal })
-                    });
+                    const res2 = await fetch(`https://api.mcsrvstat.us/2/${encodeURIComponent(ip)}`);
+                    if (res2.ok) {
+                        const json2 = await res2.json();
+                        data = {
+                            online: Boolean(json2.online),
+                            playersOnline: json2.players?.online ?? 0,
+                            playersMax: json2.players?.max ?? 0,
+                            playerList: json2.players?.list || [],
+                            version: json2.version || "Java Edition",
+                            motd: (json2.motd?.clean || []).join(" ")
+                        };
+                    }
                 } catch (e) {}
             }
+
+            const topBadge = document.getElementById("topStatusBadge");
+            const topDot = document.getElementById("topStatusDot");
+            const topText = document.getElementById("topStatusText");
+            const cardInd = document.getElementById("cardStatusIndicator");
+            const cardTitle = document.getElementById("cardStatusTitle");
+
+            if (data && data.online) {
+                topBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold";
+                topDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
+                topText.textContent = "السيرفر شغال (Online)";
+
+                cardInd.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+                cardTitle.className = "text-lg font-black font-display text-emerald-400";
+                cardTitle.textContent = "متصل (Online)";
+
+                document.getElementById("topPlayerCounter").textContent = `${data.playersOnline} / ${data.playersMax}`;
+                document.getElementById("cardPlayersCount").textContent = `${data.playersOnline} / ${data.playersMax}`;
+                document.getElementById("sidebarOnlineBadge").textContent = `${data.playersOnline} متصل`;
+
+                const pct = data.playersMax > 0 ? Math.min(100, Math.round((data.playersOnline / data.playersMax) * 100)) : 0;
+                document.getElementById("cardPlayersPercent").textContent = `${pct}%`;
+                document.getElementById("cardPlayersBar").style.width = `${pct}%`;
+
+                document.getElementById("cardVersionText").textContent = data.version;
+                document.getElementById("serverMotdDisplay").textContent = data.motd || `سيرفر ${SERVER_CONFIG.serverName} متصل الآن على ${ip}`;
+
+                liveMinecraftPlayers = data.playerList;
+            } else {
+                // السيرفر مغلق حالياً في الحقيقة - نعرض الحالة الحقيقية بكل شفافية
+                topBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold";
+                topDot.className = "w-2 h-2 rounded-full bg-rose-500";
+                topText.textContent = "السيرفر مغلق حالياً (Offline)";
+
+                cardInd.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+                cardTitle.className = "text-lg font-black font-display text-rose-400";
+                cardTitle.textContent = "مغلق حالياً (Offline)";
+
+                document.getElementById("topPlayerCounter").textContent = `0 / 0`;
+                document.getElementById("cardPlayersCount").textContent = `0 / 0`;
+                document.getElementById("sidebarOnlineBadge").textContent = `0 متصل`;
+                document.getElementById("cardPlayersPercent").textContent = `0%`;
+                document.getElementById("cardPlayersBar").style.width = `0%`;
+                document.getElementById("cardVersionText").textContent = "السيرفر غير متصل";
+                document.getElementById("serverMotdDisplay").textContent = `السيرفر (${ip}) مغلق في الوقت الحالي أو قيد الصيانة.`;
+
+                liveMinecraftPlayers = [];
+            }
+
+            renderOnlinePlayersList();
         }
 
-        // --- RCON COMMAND DISPATCHER ---
-        async function dispatchRconCommand(command) {
-            const host = document.getElementById('cfgRconHost').value.trim();
-            const port = document.getElementById('cfgRconPort').value.trim();
-            const password = document.getElementById('cfgRconPass').value;
-            const bridgeUrl = document.getElementById('cfgBridgeUrl').value.trim();
+        // عرض قائمة اللاعبين الحقيقية فقط (بدون أي لاعبين وهميين)
+        window.renderOnlinePlayersList = function() {
+            const container = document.getElementById("onlinePlayersListContainer");
+            const query = (document.getElementById("playerSearchInput")?.value || "").trim().toLowerCase();
 
-            logRcon(`> RCON Execute: /${command.replace(/^\//, '')}`, "text-cyan-400");
+            const filtered = liveMinecraftPlayers.filter(name => name.toLowerCase().includes(query));
 
-            if (bridgeUrl) {
-                try {
-                    const res = await fetch(`${bridgeUrl}/api/rcon`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ host, port, password, command })
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="h-44 flex flex-col items-center justify-center text-center p-4 text-slate-400">
+                        <i class="fa-solid fa-user-slash text-2xl text-slate-600 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-300">لا يوجد لاعبون متصلون داخل السيرفر حالياً</p>
+                        <p class="text-[11px] text-slate-500 mt-1">عندما يدخل أي لاعب إلى <span class="font-mono text-purple-400">${SERVER_CONFIG.serverIp}</span> سيظهر اسمه وسكنه هنا تلقائياً.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(playerName => `
+                <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-purple-500/40 transition">
+                    <div class="flex items-center gap-3">
+                        <img src="https://mc-heads.net/avatar/${encodeURIComponent(playerName)}/40" alt="${playerName}" class="w-9 h-9 rounded-xl border border-purple-500/30">
+                        <div>
+                            <div class="text-xs font-extrabold font-mono text-white">${playerName}</div>
+                            <div class="text-[10px] text-emerald-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                <span>متصل الآن داخل السيرفر</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/30">Online</span>
+                </div>
+            `).join("");
+        };
+
+        // =====================================================================
+        // 4. جلب بيانات الاستضافة الحقيقية (الرام، وحدة التخزين، المعالج، حالة البانل)
+        // =====================================================================
+        async function fetchRealHostingResources() {
+            const ptero = SERVER_CONFIG.pterodactyl;
+            const rconCfg = SERVER_CONFIG.rcon;
+
+            const isApiConfigured = ptero.apiKey && !ptero.apiKey.includes("YOUR_API_KEY") && ptero.panelUrl && !ptero.panelUrl.includes("example.com");
+
+            if (!isApiConfigured) {
+                // عرض السعة المحددة في الكود بوضوح بدون اختراع استهلاك وهمي
+                document.getElementById("cardRamText").textContent = `-- / ${ptero.configuredMaxRamGb} GB`;
+                document.getElementById("cardRamPercent").textContent = `CONFIG`;
+                document.getElementById("cardRamBar").style.width = `0%`;
+                document.getElementById("cardRamSubtext").textContent = `ضع API Key الاستضافة في SERVER_CONFIG لقراءة الاستهلاك الحي`;
+
+                document.getElementById("cardStorageText").textContent = `-- / ${ptero.configuredMaxStorageGb} GB`;
+                document.getElementById("cardStoragePercent").textContent = `CONFIG`;
+                document.getElementById("cardStorageBar").style.width = `0%`;
+                document.getElementById("cardStorageSubtext").textContent = `ضع API Key الاستضافة في SERVER_CONFIG لقراءة المساحة الحية`;
+
+                document.getElementById("cardHostStateText").textContent = `البانل: غير مربوط بالـ API`;
+                document.getElementById("specUptimeValue").textContent = `بانتظار API البانل`;
+                document.getElementById("specBridgeStatus").textContent = rconCfg.bridgeUrl ? "الجسر مفعل" : "ضع API/RCON بالكود";
+                return;
+            }
+
+            try {
+                let resourcesAttr = null;
+                let limitsAttr = null;
+
+                // إذا كان الجسر موجوداً نستخدمه، وإلا نستخدم بروكسي CORS مع البانل مباشرة
+                if (rconCfg.bridgeUrl) {
+                    const res = await fetch(`${rconCfg.bridgeUrl.replace(/\/$/, '')}/api/resources`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            panelUrl: ptero.panelUrl,
+                            serverId: ptero.serverId,
+                            apiKey: ptero.apiKey
+                        })
                     });
                     const data = await res.json();
                     if (data.success) {
-                        logRcon(`[Server Response]: ${data.response || 'Command executed successfully.'}`, "text-emerald-400");
+                        resourcesAttr = data.resources;
+                        limitsAttr = data.limits;
                     }
-                } catch (e) {
-                    logRcon(`[RCON Sim]: Executed on ZeroSMP (${host}:${port}).`, "text-emerald-400");
+                } else {
+                    const cleanPanel = ptero.panelUrl.replace(/\/$/, '');
+                    const proxyPrefix = ptero.corsProxy || "";
+                    const headers = {
+                        "Authorization": `Bearer ${ptero.apiKey}`,
+                        "Accept": "Application/vnd.pterodactyl.v1+json"
+                    };
+
+                    const resUsage = await fetch(`${proxyPrefix}${encodeURIComponent(`${cleanPanel}/api/client/servers/${ptero.serverId}/resources`)}`, { headers });
+                    if (resUsage.ok) {
+                        const usageJson = await resUsage.json();
+                        resourcesAttr = usageJson.attributes;
+                    }
                 }
+
+                if (resourcesAttr && resourcesAttr.resources) {
+                    const memUsedGb = (resourcesAttr.resources.memory_bytes / (1024 ** 3)).toFixed(2);
+                    const diskUsedGb = (resourcesAttr.resources.disk_bytes / (1024 ** 3)).toFixed(2);
+                    const cpuLoad = resourcesAttr.resources.cpu_absolute.toFixed(1);
+                    const uptimeMs = resourcesAttr.resources.uptime || 0;
+
+                    const maxRamGb = limitsAttr?.memory ? (limitsAttr.memory / 1024).toFixed(0) : ptero.configuredMaxRamGb;
+                    const maxDiskGb = limitsAttr?.disk ? (limitsAttr.disk / 1024).toFixed(0) : ptero.configuredMaxStorageGb;
+
+                    const ramPct = Math.min(100, Math.round((memUsedGb / maxRamGb) * 100));
+                    const diskPct = Math.min(100, Math.round((diskUsedGb / maxDiskGb) * 100));
+
+                    document.getElementById("cardRamText").textContent = `${memUsedGb} / ${maxRamGb} GB`;
+                    document.getElementById("cardRamPercent").textContent = `${ramPct}%`;
+                    document.getElementById("cardRamBar").style.width = `${ramPct}%`;
+                    document.getElementById("cardRamSubtext").textContent = `قراءة حقيقية مباشرة من Pterodactyl`;
+
+                    document.getElementById("cardStorageText").textContent = `${diskUsedGb} / ${maxDiskGb} GB`;
+                    document.getElementById("cardStoragePercent").textContent = `${diskPct}%`;
+                    document.getElementById("cardStorageBar").style.width = `${diskPct}%`;
+                    document.getElementById("cardStorageSubtext").textContent = `قراءة حقيقية مباشرة من Pterodactyl`;
+
+                    document.getElementById("cardHostStateText").textContent = `البانل: ${resourcesAttr.current_state}`;
+                    document.getElementById("specCpuValue").textContent = `${cpuLoad}% (${ptero.cpuModelName})`;
+
+                    const hours = Math.floor(uptimeMs / 3600000);
+                    const mins = Math.floor((uptimeMs % 3600000) / 60000);
+                    document.getElementById("specUptimeValue").textContent = `${hours} ساعة و ${mins} د`;
+                    document.getElementById("specsSourceBadge").textContent = "PTERODACTYL LIVE";
+                }
+            } catch (err) {
+                document.getElementById("cardRamSubtext").textContent = "تعذر الاتصال بالبانل (تأكد من الجسر أو الـ API Key)";
             }
         }
 
-        function executeAdminQuickCmd(cmd, toastMsg) {
-            dispatchRconCommand(cmd);
-            showToast(toastMsg, "emerald");
-        }
+        // =====================================================================
+        // 5. إرسال أوامر الطاقة الحقيقية للبانل وأوامر الـ RCON من إعدادات الكود
+        // =====================================================================
+        window.sendRealPowerSignal = async function(signal) {
+            const ptero = SERVER_CONFIG.pterodactyl;
+            const rconCfg = SERVER_CONFIG.rcon;
 
-        function sendAdminBroadcast() {
-            const input = document.getElementById('adminBroadcastInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            dispatchRconCommand(`title @a title {"text":"إعلان ZeroSMP","color":"dark_purple","bold":true}`);
-            dispatchRconCommand(`title @a subtitle {"text":"${text}","color":"light_purple"}`);
-            dispatchRconCommand(`tellraw @a {"text":"[إعلان الإدارة]: ${text}","color":"gold","bold":true}`);
-
-            chatMessages.push({
-                source: 'SERVER',
-                sender: 'ZeroSMP',
-                rank: 'ADMIN',
-                text: `[إعلان إداري عاجل]: ${text}`,
-                time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-            });
-            renderChatMessages();
-            input.value = "";
-            showToast("تم بث الإعلان على شاشة جميع اللاعبين وفي الشات!", "purple");
-        }
-
-        function modPlayerAction(action) {
-            const target = document.getElementById('modTargetPlayer').value;
-            if (!target) return;
-
-            const commands = {
-                op: { cmd: `op ${target}`, msg: `تم منح صلاحيات الـ OP للاعب ${target}` },
-                heal: { cmd: `effect give ${target} minecraft:instant_health 1 10`, msg: `تم شفاء اللاعب ${target}` },
-                gm_creative: { cmd: `gamemode creative ${target}`, msg: `تم تحويل ${target} إلى طور الكريتيف` },
-                tp_spawn: { cmd: `tp ${target} 0 100 0`, msg: `تم سحب اللاعب ${target} إلى السباون` },
-                kick: { cmd: `kick ${target} تم طردك من قبل إدارة ZeroSMP`, msg: `تم طرد اللاعب ${target} من السيرفر` },
-                ban: { cmd: `ban ${target} مخالفة قوانين سيرفر ZeroSMP`, msg: `تم حظر اللاعب ${target} نهائياً` }
-            };
-
-            const chosen = commands[action];
-            if (!chosen) return;
-
-            dispatchRconCommand(chosen.cmd);
-            if (action === 'kick' || action === 'ban') {
-                onlinePlayers = onlinePlayers.filter(p => p.name !== target);
-                renderOnlinePlayers();
+            if (!ptero.apiKey || ptero.apiKey.includes("YOUR_API_KEY")) {
+                showToast("يرجى وضع مفتاح API الاستضافة أولاً داخل SERVER_CONFIG في الكود!", "error");
+                return;
             }
-            showToast(chosen.msg, action === 'ban' ? 'rose' : 'emerald');
-        }
 
-        function addPublicAnnouncement() {
-            const input = document.getElementById('newSiteRuleInput');
-            const text = input.value.trim();
-            if (!text) return;
-            const ul = document.getElementById('publicAnnouncementsList');
-            const li = document.createElement('li');
-            li.className = "flex items-start gap-2 bg-slate-900/70 p-2.5 rounded-xl border border-purple-500/30";
-            li.innerHTML = `<span class="text-amber-400 font-bold">✦</span><span>${text}</span>`;
-            ul.prepend(li);
-            input.value = "";
-            showToast("تم نشر الإعلان الجديد في الصفحة الرئيسية للموقع!", "emerald");
-        }
+            try {
+                showToast(`جاري إرسال إشارة (${signal}) الحقيقية للاستضافة...`, "info");
+                if (rconCfg.bridgeUrl) {
+                    const res = await fetch(`${rconCfg.bridgeUrl.replace(/\/$/, '')}/api/power`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            panelUrl: ptero.panelUrl,
+                            serverId: ptero.serverId,
+                            apiKey: ptero.apiKey,
+                            signal
+                        })
+                    });
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error || "فشل إرسال الإشارة");
+                } else {
+                    const cleanPanel = ptero.panelUrl.replace(/\/$/, '');
+                    const url = `${ptero.corsProxy}${encodeURIComponent(`${cleanPanel}/api/client/servers/${ptero.serverId}/power`)}`;
+                    const res = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${ptero.apiKey}`,
+                            "Content-Type": "application/json",
+                            "Accept": "Application/vnd.pterodactyl.v1+json"
+                        },
+                        body: JSON.stringify({ signal })
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                }
+                showToast(`تم إرسال إشارة (${signal}) إلى البانل بنجاح!`, "success");
+                setTimeout(() => fetchAllRealData(false), 3000);
+            } catch (err) {
+                showToast(`خطأ أثناء الاتصال بالبانل: ${err.message}`, "error");
+            }
+        };
 
-        // --- RCON TERMINAL LOGS ---
-        function logRcon(message, colorClass = "text-slate-300") {
-            const term = document.getElementById('rconTerminal');
-            if (!term) return;
-            const now = new Date().toLocaleTimeString('en-GB');
-            const line = document.createElement('div');
-            line.className = `${colorClass} font-mono`;
-            line.innerText = `[${now}] ${message}`;
-            term.appendChild(line);
-            term.scrollTop = term.scrollHeight;
-        }
-
-        function clearRconConsole() {
-            document.getElementById('rconTerminal').innerHTML = `<div class="text-slate-500">[Console]: Terminal cleared. Ready for commands...</div>`;
-        }
-
-        function sendCustomRconCommand() {
-            const input = document.getElementById('customRconInput');
+        window.sendCustomRconCommand = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById("directRconInput");
             const cmd = input.value.trim();
             if (!cmd) return;
-            dispatchRconCommand(cmd);
+
+            const rconCfg = SERVER_CONFIG.rcon;
+            if (!rconCfg.bridgeUrl) {
+                showToast("يرجى وضع رابط الجسر (bridgeUrl) في SERVER_CONFIG.rcon داخل الكود لتنفيذ أوامر RCON!", "error");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${rconCfg.bridgeUrl.replace(/\/$/, '')}/api/rcon`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        host: rconCfg.host,
+                        port: rconCfg.port,
+                        password: rconCfg.password,
+                        command: cmd
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`رد السيرفر (RCON): ${data.response || 'تم التنفيذ بنجاح'}`, "success");
+                    input.value = "";
+                } else {
+                    showToast(`خطأ RCON: ${data.error}`, "error");
+                }
+            } catch (err) {
+                showToast(`تعذر الاتصال بجسر الـ RCON: ${err.message}`, "error");
+            }
+        };
+
+        // =====================================================================
+        // 6. الشات الجماعي الحقيقي بالوقت الفعلي (Firestore Real-Time Chat)
+        // يظهر فوراً عند جميع الأشخاص المتصلين بالموقع + يرسل للسيرفر عبر RCON
+        // =====================================================================
+        async function initFirebaseAndRealtimeChat() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+                    document.getElementById("liveChatFeed").innerHTML = `
+                        <div class="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/40 text-xs text-rose-200">
+                            بيئة Firebase غير متوفرة في هذا المتصفح.
+                        </div>`;
+                    return;
+                }
+
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // RULE 3: Auth Before Queries
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentFirebaseUser = user;
+                    if (user) {
+                        subscribeToRealtimeChat();
+                        registerOnlinePresence(user.uid);
+                    }
+                });
+            } catch (err) {
+                console.error("Firebase init error:", err);
+                showToast("حدث خطأ أثناء الاتصال بخادم الشات المباشر", "error");
+            }
+        }
+
+        function subscribeToRealtimeChat() {
+            if (!currentFirebaseUser || !db) return;
+
+            // RULE 1 & RULE 2: Strict path, simple collection query sorted in JS memory
+            const chatColRef = collection(db, 'artifacts', appId, 'public', 'data', 'zerosmp_messages');
+
+            onSnapshot(chatColRef, (snapshot) => {
+                const msgs = [];
+                snapshot.forEach(docSnap => {
+                    msgs.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // ترتيب الرسائل زمنياً في الذاكرة
+                msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+                // تشغيل نغمة لطيفة إذا وصلت رسالة جديدة من شخص آخر
+                if (initialChatLoadDone && msgs.length > liveChatMessages.length) {
+                    const newest = msgs[msgs.length - 1];
+                    if (newest && newest.senderName !== currentUserSession.username && soundEnabled) {
+                        playNotificationBeep();
+                    }
+                }
+
+                liveChatMessages = msgs.slice(-120);
+                initialChatLoadDone = true;
+                renderChatMessagesFeed();
+            }, (error) => {
+                console.error("Chat Snapshot Error:", error);
+            });
+        }
+
+        function renderChatMessagesFeed() {
+            const feed = document.getElementById("liveChatFeed");
+            if (!feed) return;
+
+            if (liveChatMessages.length === 0) {
+                feed.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-600/15 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-3">
+                            <i class="fa-regular fa-comments"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">الشات المباشر جاهز ونظيف 100%</p>
+                        <p class="text-xs text-slate-400 mt-1 max-w-xs">لا توجد أي رسائل وهمية. اكتب أول رسالة الآن وستظهر فوراً عند جميع زوار الموقع!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feed.innerHTML = liveChatMessages.map(msg => {
+                const isMe = msg.senderName === currentUserSession.username;
+                const skinName = msg.isGuest ? "MHF_Steve" : msg.senderName;
+                const avatar = `https://mc-heads.net/avatar/${encodeURIComponent(skinName)}/40`;
+                const timeStr = msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' }) : '';
+
+                let roleBadge = `<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">ضيف</span>`;
+                if (msg.role === "إدارة") {
+                    roleBadge = `<span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">إدارة ZeroSMP</span>`;
+                } else if (!msg.isGuest) {
+                    roleBadge = `<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">لاعب موثق ✔</span>`;
+                }
+
+                return `
+                    <div class="flex items-start gap-3 p-3 rounded-2xl transition ${isMe ? 'bg-purple-950/35 border border-purple-500/40' : 'bg-slate-900/75 border border-slate-800/80'}">
+                        <img src="${avatar}" alt="${escapeHtml(msg.senderName)}" class="w-9 h-9 rounded-xl border border-purple-500/30 shrink-0 mt-0.5">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-extrabold font-mono text-xs sm:text-sm ${isMe ? 'text-purple-300' : 'text-white'}">${escapeHtml(msg.senderName)}</span>
+                                    ${roleBadge}
+                                </div>
+                                <span class="text-[10px] font-mono text-slate-500">${timeStr}</span>
+                            </div>
+                            <p dir="auto" class="text-xs sm:text-sm text-slate-100 break-words leading-relaxed">${escapeHtml(msg.text)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        // إرسال رسالة حقيقية إلى Firestore (لتظهر لكل زوار الموقع) + إرسالها إلى RCON ماينكرافت
+        window.handleSendChatMessage = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById("webChatInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!currentFirebaseUser || !db) {
+                showToast("جاري الاتصال بقاعدة بيانات الشات، حاول بعد ثانية...", "info");
+                return;
+            }
+
+            const sendBtn = document.getElementById("sendChatBtn");
+            sendBtn.disabled = true;
             input.value = "";
+
+            try {
+                const msgPayload = {
+                    text: text,
+                    senderName: currentUserSession.username,
+                    isGuest: Boolean(currentUserSession.isGuest),
+                    role: currentUserSession.role || "ضيف",
+                    uid: currentFirebaseUser.uid,
+                    createdAt: Date.now()
+                };
+
+                // 1. حفظ الرسالة في السحابة الحقيقية لتظهر فوراً عند كل شخص فاتح الموقع
+                const chatColRef = collection(db, 'artifacts', appId, 'public', 'data', 'zerosmp_messages');
+                await addDoc(chatColRef, msgPayload);
+
+                // 2. إذا كان جسر الـ RCON مربوطاً في SERVER_CONFIG، أرسل الرسالة داخل سيرفر ماينكرافت أيضاً
+                const rconCfg = SERVER_CONFIG.rcon;
+                if (rconCfg.bridgeUrl) {
+                    const tellrawJson = JSON.stringify([
+                        "",
+                        { text: "[ZeroSMP Web] ", color: "dark_purple", bold: true },
+                        { text: `<${currentUserSession.username}> `, color: "light_purple" },
+                        { text: text, color: "white" }
+                    ]);
+                    fetch(`${rconCfg.bridgeUrl.replace(/\/$/, '')}/api/rcon`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            host: rconCfg.host,
+                            port: rconCfg.port,
+                            password: rconCfg.password,
+                            command: `tellraw @a ${tellrawJson}`
+                        })
+                    }).catch(() => {});
+                }
+            } catch (err) {
+                showToast("تعذر إرسال الرسالة: " + err.message, "error");
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        };
+
+        // تتبع عدد الزوار الحقيقيين المتواجدين في الموقع الآن
+        async function registerOnlinePresence(uid) {
+            if (!db || !currentFirebaseUser) return;
+            try {
+                const presDoc = doc(db, 'artifacts', appId, 'public', 'data', 'zerosmp_presence', uid);
+                await setDoc(presDoc, {
+                    username: currentUserSession.username,
+                    lastActive: Date.now()
+                });
+
+                const presCol = collection(db, 'artifacts', appId, 'public', 'data', 'zerosmp_presence');
+                onSnapshot(presCol, (snap) => {
+                    const now = Date.now();
+                    let activeCount = 0;
+                    snap.forEach(d => {
+                        const data = d.data();
+                        if (data.lastActive && (now - data.lastActive) < 15 * 60 * 1000) {
+                            activeCount++;
+                        }
+                    });
+                    document.getElementById("webVisitorsCount").textContent = `المتصلون بالموقع: ${Math.max(1, activeCount)}`;
+                }, () => {});
+            } catch (e) {}
         }
 
-        // --- BRIDGE CODE MODAL & HELPERS ---
-        function openBridgeCodeModal() {
-            document.getElementById('bridgeCodeModal').classList.remove('hidden');
-        }
-        function closeBridgeCodeModal() {
-            document.getElementById('bridgeCodeModal').classList.add('hidden');
+        // =====================================================================
+        // 7. نظام تسجيل الدخول الحقيقي (حساب محمي بكلمة سر أو دخول كضيف)
+        // =====================================================================
+        window.openAuthModal = function() {
+            const modal = document.getElementById("authModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        };
+
+        window.closeAuthModal = function() {
+            const modal = document.getElementById("authModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        };
+
+        window.switchAuthTab = function(tab) {
+            const accForm = document.getElementById("accountAuthForm");
+            const gstForm = document.getElementById("guestAuthForm");
+            const accBtn = document.getElementById("tabAccountBtn");
+            const gstBtn = document.getElementById("tabGuestBtn");
+
+            if (tab === "ACCOUNT") {
+                accForm.classList.remove("hidden");
+                gstForm.classList.add("hidden");
+                accBtn.className = "py-2 rounded-xl bg-purple-600 text-white transition";
+                gstBtn.className = "py-2 rounded-xl text-slate-400 hover:text-white transition";
+            } else {
+                accForm.classList.add("hidden");
+                gstForm.classList.remove("hidden");
+                gstBtn.className = "py-2 rounded-xl bg-purple-600 text-white transition";
+                accBtn.className = "py-2 rounded-xl text-slate-400 hover:text-white transition";
+            }
+        };
+
+        // تشفير بسيط لكلمة المرور قبل حفظها/مقارنتها في Firestore
+        async function hashPassword(password) {
+            const msgUint8 = new TextEncoder().encode(password + "_zerosmp_salt");
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        function copyElementText(id) {
-            const text = document.getElementById(id).innerText;
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showToast("تم نسخ الكود بالكامل إلى الحافظة!", "emerald");
-        }
+        window.handleAccountAuth = async function(e) {
+            e.preventDefault();
+            if (!db || !currentFirebaseUser) {
+                showToast("انتظر لحظة حتى يكتمل الاتصال بقاعدة البيانات...", "info");
+                return;
+            }
 
-        // --- TOAST NOTIFICATIONS ---
-        function showToast(msg, color = "emerald") {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            const borderColors = {
-                emerald: "border-emerald-500/50 bg-slate-900/95 text-emerald-300",
-                rose: "border-rose-500/50 bg-slate-900/95 text-rose-300",
-                amber: "border-amber-500/50 bg-slate-900/95 text-amber-300",
-                purple: "border-purple-500/50 bg-slate-900/95 text-purple-300"
+            const usernameRaw = document.getElementById("authAccountUsername").value.trim();
+            const passwordRaw = document.getElementById("authAccountPassword").value;
+            const userKey = usernameRaw.toLowerCase().replace(/[^a-z0-9_\u0600-\u06FF]/gi, '');
+
+            if (userKey.length < 3) {
+                showToast("يرجى كتابة اسم مستخدم صالح (3 أحرف على الأقل)", "error");
+                return;
+            }
+
+            const submitBtn = document.getElementById("accountSubmitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "جاري التحقق من الحساب...";
+
+            try {
+                const pwdHash = await hashPassword(passwordRaw);
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'zerosmp_users', userKey);
+                const existingSnap = await getDoc(userDocRef);
+
+                if (existingSnap.exists()) {
+                    const userData = existingSnap.data();
+                    if (userData.passwordHash !== pwdHash) {
+                        showToast("كلمة المرور غير صحيحة لهذا الحساب المسجل!", "error");
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "تسجيل الدخول / إنشاء الحساب";
+                        return;
+                    }
+                    showToast(`أهلاً بعودتك يا ${userData.displayName}! تم تسجيل دخولك بنجاح.`, "success");
+                    currentUserSession = {
+                        username: userData.displayName,
+                        isGuest: false,
+                        role: "لاعب موثق"
+                    };
+                } else {
+                    // إنشاء حساب جديد وحفظه في قاعدة البيانات
+                    await setDoc(userDocRef, {
+                        displayName: usernameRaw,
+                        passwordHash: pwdHash,
+                        createdAt: Date.now()
+                    });
+                    showToast(`تم إنشاء حسابك وتوثيقه باسم (${usernameRaw}) بنجاح!`, "success");
+                    currentUserSession = {
+                        username: usernameRaw,
+                        isGuest: false,
+                        role: "لاعب موثق"
+                    };
+                }
+
+                localStorage.setItem("zerosmp_user_session_v2", JSON.stringify(currentUserSession));
+                updateUserHeaderWidget();
+                renderChatMessagesFeed();
+                registerOnlinePresence(currentFirebaseUser.uid);
+                window.closeAuthModal();
+            } catch (err) {
+                showToast("حدث خطأ أثناء التحقق من الحساب: " + err.message, "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "تسجيل الدخول / إنشاء الحساب";
+            }
+        };
+
+        window.handleGuestAuth = function(e) {
+            e.preventDefault();
+            const customGuest = document.getElementById("authGuestName").value.trim();
+            const guestName = customGuest ? `ضيف_${customGuest}` : `ضيف_${Math.floor(1000 + Math.random() * 9000)}`;
+
+            currentUserSession = {
+                username: guestName,
+                isGuest: true,
+                role: "ضيف"
             };
-            toast.className = `pointer-events-auto border ${borderColors[color] || borderColors.emerald} px-4 py-3 rounded-xl shadow-2xl text-xs font-bold flex items-center justify-between gap-3 transition-all duration-300`;
-            toast.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>${msg}</span>
-                </div>
-            `;
+
+            localStorage.setItem("zerosmp_user_session_v2", JSON.stringify(currentUserSession));
+            updateUserHeaderWidget();
+            renderChatMessagesFeed();
+            if (currentFirebaseUser) registerOnlinePresence(currentFirebaseUser.uid);
+            window.closeAuthModal();
+            showToast(`تم دخولك كضيف باسم (${guestName})`, "success");
+        };
+
+        // =====================================================================
+        // 8. أدوات مساعدة (نسخ الأيبي، إشعارات، نافذة كود الجسر)
+        // =====================================================================
+        window.copyServerIp = function() {
+            const ip = SERVER_CONFIG.serverIp;
+            const tempInput = document.createElement("textarea");
+            tempInput.value = ip;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast(`تم نسخ أيبي السيرفر (${ip}) بنجاح!`, "success");
+        };
+
+        window.insertQuickPhrase = function(phrase) {
+            const input = document.getElementById("webChatInput");
+            input.value = phrase;
+            input.focus();
+        };
+
+        window.toggleChatSound = function() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById("soundToggleIcon");
+            icon.className = soundEnabled ? "fa-solid fa-volume-high text-purple-300" : "fa-solid fa-volume-xmark text-slate-500";
+            showToast(soundEnabled ? "تم تفعيل صوت رسائل الشات" : "تم كتم صوت رسائل الشات", "info");
+        };
+
+        function playNotificationBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(660, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.09);
+            } catch (e) {}
+        }
+
+        window.openBridgeCodeModal = function() {
+            const m = document.getElementById("bridgeModal");
+            m.classList.remove("hidden");
+            m.classList.add("flex");
+        };
+
+        window.closeBridgeCodeModal = function() {
+            const m = document.getElementById("bridgeModal");
+            m.classList.add("hidden");
+            m.classList.remove("flex");
+        };
+
+        function escapeHtml(str) {
+            return String(str || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            const colors = {
+                success: "border-emerald-500/50 bg-emerald-950/90 text-emerald-200",
+                error: "border-rose-500/50 bg-rose-950/90 text-rose-200",
+                info: "border-purple-500/50 bg-purple-950/90 text-purple-200"
+            };
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl border shadow-xl text-xs font-bold backdrop-blur-md transition-all duration-300 ${colors[type] || colors.info}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${escapeHtml(message)}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
-                toast.style.opacity = '0';
+                toast.style.opacity = "0";
                 setTimeout(() => toast.remove(), 300);
             }, 3500);
         }
+
+        window.fetchAllRealData = async function(showNotification = false) {
+            const spinner = document.getElementById("refreshSpinnerIcon");
+            if (spinner) spinner.classList.add("fa-spin");
+
+            await Promise.all([
+                fetchRealMinecraftStatus(),
+                fetchRealHostingResources()
+            ]);
+
+            if (spinner) spinner.classList.remove("fa-spin");
+            if (showNotification) {
+                showToast("تم تحديث بيانات السيرفر الحقيقية بنجاح!", "success");
+            }
+        };
+
+        // تشغيل الموقع وفحص السيرفر الحقيقي والشات عند التحميل
+        window.addEventListener("DOMContentLoaded", () => {
+            applyStaticConfigToUI();
+            initFirebaseAndRealtimeChat();
+            fetchAllRealData(false);
+            // تحديث تلقائي لحالة السيرفر والرام كل 25 ثانية
+            setInterval(() => fetchAllRealData(false), 25000);
+        });
     </script>
 </body>
 </html>
